@@ -7,7 +7,6 @@
 
 #include <cmath>
 #include <algorithm>
-#include <cerrno>
 #include <vector>
 
 using namespace std;
@@ -160,6 +159,7 @@ double area2(polygon& a) {
 	return area;
 }
 
+// takes latitude/longitude in degrees as normally specified
 double great_circle(double lat1, double lon1, double lat2, double lon2) {
 	lat1 *= M_PI / 180; lat2 *= M_PI / 180; lon1 *= M_PI / 180; lon2 *= M_PI / 180;
 	return acos(cos(lat1) * cos(lat2) * cos(lon1 - lon2) + sin(lat1) * (sin(lat2)));
