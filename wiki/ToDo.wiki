@@ -3,7 +3,7 @@
 = Geometry =
 
 Convex hull:
-  Jarvis march
+  Graham Scan
 
 
 = Other math =
