@@ -1,0 +1,12 @@
+#summary Code library stuff to do.
+
+= Geometry =
+
+Convex hull:
+  Jarvis march
+
+
+= Other math =
+
+Root-finding:
+  Weierstrauss
