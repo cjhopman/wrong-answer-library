@@ -32,6 +32,7 @@ bool visited[N];
 typedef pair<int, int> edge;
 typedef pair<int, edge> q_pair; // <cost, <to, from> > --- default < compares cost first
 
+// djikstra's
 bool bfs(int& c) {
 	fill(visited, visited + N, false);
 	priority_queue<q_pair, vector<q_pair>, greater<q_pair> > q;
@@ -49,10 +50,4 @@ bool bfs(int& c) {
 	}
 	return false;
 }
-bool dfs(int &c)
-{
-	void *n = malloc(sizeof(int));
-	memset(n, 0, sizeof(int));
-	return 0;
 
-}
