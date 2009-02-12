@@ -38,25 +38,29 @@ double dist(pt a, pt b) { return abs(b-a); }
  *   (at least in 2D)
  */
 
-#define det(a, b) (real(a)*imag(b) - imag(a)*real(b))
-#define dot(a, b) (real(a)*real(b) + imag(a)*imag(b))
+//#define det(a, b) (real(a)*imag(b) - imag(a)*real(b))
+//#define dot(a, b) (real(a)*real(b) + imag(a)*imag(b))
+#define det(a, b) imag(conj(a)*(b))
+#define dot(a, b) real(conj(a)*(b))
 
 pt perpendicular(pt p) { return p * polar(1.0, M_PI/2); }
 
-//** NOT TESTED
+// Tested.
+// Returns nan if a == b.
 double distPtLine(pt p, pt a, pt b)
 {
     return abs(det(b-a, p-a)) / abs(b-a);
 }
 
-//** NOT TESTED
+// Tested.
+// Returns dist(p,a) if a == b. (change conditional to dot[ab]<0 to return nan)
 double distPtSeg(pt p, pt a, pt b)
 {
-    double deta = det(b-a, p-a);
-    double detb = det(a-b, p-b);
-    if (deta < 0)
+    double dota = dot(b-a, p-a);
+    double dotb = dot(a-b, p-b);
+    if (dota < EPS)
         return abs(p-a);
-    if (detb < 0)
+    if (dotb < EPS)
         return abs(p-b);
     return abs(det(b-a, p-a)) / abs(b-a);
 }
@@ -171,24 +175,3 @@ bool inside_convex(pt p, polygon& vv)
             return false;
 	return true;
 }
-
-#include <iostream>
-#include <cassert>
-#define ASSERT(x) assert((x))
-int main()
-{
-    ASSERT(xSegSeg( pt(0.0,0.0), pt(1.0,1.0),  pt(0.0,1.0), pt(1.0,0.0) ) == 1);
-    ASSERT(xSegSeg( pt(0.0,0.0), pt(3.0,1.0),  pt(2.0,1.0), pt(9.0,2.0) ) == 0);
-    ASSERT(xSegSeg( pt(0.0,0.0), pt(3.0,1.0),  pt(3.0,1.0), pt(9.0,2.0) ) == 1);
-    ASSERT(xSegSeg( pt(0.0,0.0), pt(3.0,1.0),  pt(3.0,1.0), pt(9.0,2.0) ) == 1);
-    ASSERT(xSegSeg( pt(0.0,0.0), pt(3.0,2.0),  pt(2.0,1.0), pt(9.0,2.0) ) == 0);
-    ASSERT(xSegSeg( pt(0.0,0.0), pt(100.0,0.0),  pt(0.0,1.0), pt(100.0,-1.0) ) == 1);
-    ASSERT(xSegSeg( pt(0.0,0.0), pt(100.0,0.0),  pt(0.0,1.0), pt(100.0, 1.0) ) == 0);
-    ASSERT(xSegSeg( pt(0.0,0.0), pt(100.0,0.0),  pt(0.0,0.0), pt(100.0,0.0) ) == 1);
-    ASSERT(xSegSeg( pt(0.0,0.0), pt(50.0,0.0),  pt(50.0,0.0), pt(150.0,0.0) ) == 1);
-    ASSERT(xSegSeg( pt(0.0,0.0), pt(50.0,0.0),  pt(20.0,0.0), pt(30.0,0.0) ) == 1);
-    cout << xLineLine( pt(0.0,0.0), pt(1.0,1.0),  pt(1.0,0.0), pt(0.0,1.0) ) << " == " << pt(0.5,0.5) << endl;
-    cout << xLineLine( pt(0.0,0.0), pt(1.0,0.0),  pt(1.0,0.0), pt(1.0,1.0) ) << " == " << pt(1.0,0.0) << endl;
-    return 0;
-}
-
