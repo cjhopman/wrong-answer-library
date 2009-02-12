@@ -61,6 +61,11 @@ double distPtSeg(pt p, pt a, pt b)
     return abs(det(b-a, p-a)) / abs(b-a);
 }
 
+/* True if a-b c-d parallel. */
+//** NOT TESTED
+bool isParallel(pt a, pt b, pt c, pt d)
+{ return abs(det(a-b, c-d)) < EPS; }
+
 /* Helper function: for xSegSeg
  * True if a-z, b-z, c-z are ordered in angle. (either direction)
  *  -- True if a-z b-z parallel or b-z c-z parallel. */
@@ -73,6 +78,7 @@ bool ordered(pt z, pt a, pt b, pt c)
 
 /* True if segment a-b crosses segment c-d 
  *  -- True at endpoints. */
+// Horribly broken; need rewrite.
 bool xSegSeg(pt a,pt b,pt c,pt d) 
 { return ordered(a,c,b,d) && ordered(d,b,c,a); }
 
