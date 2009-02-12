@@ -14,12 +14,8 @@
 
 #include <cmath>
 #include <algorithm>
-#include <cerrno>
 #include <vector>
 #include <complex>
-
-
-#include <iostream>
 
 using namespace std;
 
@@ -53,7 +49,7 @@ double distPtLine(pt p, pt a, pt b)
 }
 
 // Tested.
-// Returns dist(p,a) if a == b. (change conditional to dot[ab]<0 to return nan)
+// Returns dist(p,a) if a == b. (change conditional to dot[ab] < 0 to return nan)
 double distPtSeg(pt p, pt a, pt b)
 {
     double dota = dot(b-a, p-a);
@@ -65,10 +61,9 @@ double distPtSeg(pt p, pt a, pt b)
     return abs(det(b-a, p-a)) / abs(b-a);
 }
 
-/* Helper function: 
- * True if a-z, b-z, c-z are ordered (in either order) 
- *  -- True at endpoints. */
-//** NOT TESTED
+/* Helper function: for xSegSeg
+ * True if a-z, b-z, c-z are ordered in angle. (either direction)
+ *  -- True if a-z b-z parallel or b-z c-z parallel. */
 bool ordered(pt z, pt a, pt b, pt c)
 { 
     double det1 = det(a-z, b-z);
@@ -78,12 +73,12 @@ bool ordered(pt z, pt a, pt b, pt c)
 
 /* True if segment a-b crosses segment c-d 
  *  -- True at endpoints. */
-//** NOT TESTED
 bool xSegSeg(pt a,pt b,pt c,pt d) 
 { return ordered(a,c,b,d) && ordered(d,b,c,a); }
 
-/* Intersection of line a-b and line c-d */
-//** NOT TESTED
+/* Intersection of line a-b and line c-d
+ *  -- Returns an "invalid" complex if a-b c-d parallel. (i.e. contains nan or inf)
+ */
 pt xLineLine(pt a, pt b, pt c, pt d)
 {
     //assert( det(a-b, c-d) > EPS );
@@ -97,7 +92,7 @@ pt xLineLine(pt a, pt b, pt c, pt d)
     return pt(rx, ry) / det(a-b, c-d);
 }
 
-
+/* copied from Chris's code; not tested */
 void barycentric(pt _a, pt _b, pt _c, pt _p, double &L1, double &L2, double &L3)
 {
     pt a = _a - _c, b = _b - _c, p = _p - _c;
@@ -106,6 +101,7 @@ void barycentric(pt _a, pt _b, pt _c, pt _p, double &L1, double &L2, double &L3)
     L3 = 1 - L1 - L2;
 }
 
+/* copied from Chris's code; not tested */
 bool in_triangle(pt _p, pt _a, pt _b, pt _c)
 {
     double L1, L2, L3;
