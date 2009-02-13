@@ -39,77 +39,58 @@ void distPtSeg_test()
 
 void xSegSeg_test()
 {
-    /* closed version */
-    assert( xSegSeg( pt(0,0), pt(1,1),  pt(0,1), pt(1,0) ) );
-    assert(!xSegSeg( pt(0,0), pt(3,1),  pt(2,1), pt(9,2) ) );
-    assert(!xSegSeg( pt(0,0), pt(3,2),  pt(2,1), pt(9,2) ) );
-    assert( xSegSeg( pt(0,0), pt(100,0),  pt(0,1), pt(100,-1) ) );
-    assert(!xSegSeg( pt(0,0), pt(100,0),  pt(0,1), pt(100, 1) ) );
-    assert( xSegSeg( pt(0,0), pt(2,8),  pt(1,6), pt(8,3) ) );
-    // edge-corner cases
+    typedef bool (*xsegseg_t)(pt, pt, pt, pt);
+    xsegseg_t xsegseg_fns[] = 
     {
-        pt a(0,0), b(2,0), c(1,0), d(1,3);
-        assert( xSegSeg( a,b, c,d) );
-        assert( xSegSeg( a,b, d,c) );
-        assert( xSegSeg( b,a, c,d) );
-        assert( xSegSeg( b,a, d,c) );
-    }
-    // edge-edge cases
-    assert( xSegSeg( pt(0,0), pt(0,2),  pt(0,1), pt(0,3) ) );
+        &xSegSeg,
+        &xSegSeg_open,
+        &xSegSeg_simple
+    } ;
+
+    for (int i = 0; i < 3; i++)
     {
-        pt a(0,0), b(0,1), c(0,2), d(0,3);
-        assert( xSegSeg( a,d, b,c) );
-        assert( xSegSeg( a,d, c,b) );
-        assert( xSegSeg( d,a, b,c) );
-        assert( xSegSeg( d,a, c,b) );
-        assert(!xSegSeg( a,b, c,d) );
-        assert(!xSegSeg( b,a, c,d) );
-        assert(!xSegSeg( a,b, d,c) );
-        assert(!xSegSeg( b,a, d,c) );
+        xsegseg_t fp = xsegseg_fns[i];
+
+        assert( fp( pt(0,0), pt(1,1),  pt(0,1), pt(1,0) ) );
+        assert(!fp( pt(0,0), pt(3,1),  pt(2,1), pt(9,2) ) );
+        assert(!fp( pt(0,0), pt(3,2),  pt(2,1), pt(9,2) ) );
+        assert( fp( pt(0,0), pt(100,0),  pt(0,1), pt(100,-1) ) );
+        assert(!fp( pt(0,0), pt(100,0),  pt(0,1), pt(100, 1) ) );
+        assert( fp( pt(0,0), pt(2,8),  pt(1,6), pt(8,3) ) );
+        
+        if (fp == &xSegSeg_simple) continue;
+
+        // edge-corner cases
+        {
+            pt a(0,0), b(2,0), c(1,0), d(1,3);
+            assert( fp( a,b, c,d) == (fp == &xSegSeg) );
+            assert( fp( a,b, d,c) == (fp == &xSegSeg) );
+            assert( fp( b,a, c,d) == (fp == &xSegSeg) );
+            assert( fp( b,a, d,c) == (fp == &xSegSeg) );
+        }
+        // edge-edge cases
+        assert( fp( pt(0,0), pt(0,2),  pt(0,1), pt(0,3) ) == (fp == &xSegSeg) );
+        {
+            pt a(0,0), b(0,1), c(0,2), d(0,3);
+            assert( fp( a,d, b,c) == (fp == &xSegSeg) );
+            assert( fp( a,d, c,b) == (fp == &xSegSeg) );
+            assert( fp( d,a, b,c) == (fp == &xSegSeg) );
+            assert( fp( d,a, c,b) == (fp == &xSegSeg) );
+            assert(!fp( a,b, c,d) );
+            assert(!fp( b,a, c,d) );
+            assert(!fp( a,b, d,c) );
+            assert(!fp( b,a, d,c) );
+        }
+        assert(!fp( pt(3,6), pt(4,8),  pt(1,2), pt(2,4) ) );
+        // corner-corner cases
+        assert( fp( pt(0,0), pt(3,1),  pt(3,1), pt(9,2) ) == (fp == &xSegSeg) );
+        assert( fp( pt(0,0), pt(0,1),  pt(0,1), pt(0,2) ) == (fp == &xSegSeg) );
+        assert( fp( pt(0,0), pt(0,1),  pt(0,1), pt(1,1) ) == (fp == &xSegSeg) );
+        assert( fp( pt(0,0), pt(0,1),  pt(0,0), pt(0,1) ) == (fp == &xSegSeg) );
+        assert(!fp( pt(0,0), pt(0,0),  pt(1,1), pt(2,1) ) );
+        assert(!fp( pt(0,0), pt(0,0),  pt(1,1), pt(1,1) ) );
+        assert( fp( pt(0,0), pt(0,0),  pt(0,0), pt(0,0) ) == (fp == &xSegSeg) );
     }
-    assert(!xSegSeg( pt(3,6), pt(4,8),  pt(1,2), pt(2,4) ) );
-    // corner-corner cases
-    assert( xSegSeg( pt(0,0), pt(3,1),  pt(3,1), pt(9,2) ) );
-    assert( xSegSeg( pt(0,0), pt(0,1),  pt(0,1), pt(0,2) ) );
-    assert( xSegSeg( pt(0,0), pt(0,1),  pt(0,1), pt(1,1) ) );
-    assert( xSegSeg( pt(0,0), pt(0,1),  pt(0,0), pt(0,1) ) );
-    assert( xSegSeg( pt(0,0), pt(0,0),  pt(0,0), pt(0,0) ) );
-    
-    /* open version */
-    assert( xSegSeg_open( pt(0,0), pt(1,1),  pt(0,1), pt(1,0) ) );
-    assert(!xSegSeg_open( pt(0,0), pt(3,1),  pt(2,1), pt(9,2) ) );
-    assert(!xSegSeg_open( pt(0,0), pt(3,2),  pt(2,1), pt(9,2) ) );
-    assert( xSegSeg_open( pt(0,0), pt(100,0),  pt(0,1), pt(100,-1) ) );
-    assert(!xSegSeg_open( pt(0,0), pt(100,0),  pt(0,1), pt(100, 1) ) );
-    assert( xSegSeg_open( pt(0,0), pt(2,8),  pt(1,6), pt(8,3) ) );
-    // edge-corner cases
-    {
-        pt a(0,0), b(2,0), c(1,0), d(1,3);
-        assert(!xSegSeg_open( a,b, c,d) );
-        assert(!xSegSeg_open( a,b, d,c) );
-        assert(!xSegSeg_open( b,a, c,d) );
-        assert(!xSegSeg_open( b,a, d,c) );
-    }
-    // edge-edge cases
-    assert(!xSegSeg_open( pt(0,0), pt(0,2),  pt(0,1), pt(0,3) ) );
-    {
-        pt a(0,0), b(0,1), c(0,2), d(0,3);
-        assert(!xSegSeg_open( a,d, b,c) );
-        assert(!xSegSeg_open( a,d, c,b) );
-        assert(!xSegSeg_open( d,a, b,c) );
-        assert(!xSegSeg_open( d,a, c,b) );
-        assert(!xSegSeg_open( a,b, c,d) );
-        assert(!xSegSeg_open( b,a, c,d) );
-        assert(!xSegSeg_open( a,b, d,c) );
-        assert(!xSegSeg_open( b,a, d,c) );
-    }
-    assert(!xSegSeg_open( pt(3,6), pt(4,8),  pt(1,2), pt(2,4) ) );
-    // corner-corner cases
-    assert(!xSegSeg_open( pt(0,0), pt(3,1),  pt(3,1), pt(9,2) ) );
-    assert(!xSegSeg_open( pt(0,0), pt(0,1),  pt(0,1), pt(0,2) ) );
-    assert(!xSegSeg_open( pt(0,0), pt(0,1),  pt(0,1), pt(1,1) ) );
-    assert(!xSegSeg_open( pt(0,0), pt(0,1),  pt(0,0), pt(0,1) ) );
-    assert(!xSegSeg_open( pt(0,0), pt(0,0),  pt(0,0), pt(0,0) ) );
 }
 
 void xLineLine_test()
@@ -131,33 +112,34 @@ void xLineLine_test()
 
 void in_triangle_test()
 {
-    /* closed version */
-    assert( in_triangle( pt(1,1),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert(!in_triangle( pt(2,2),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert( in_triangle( pt(1,2),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert(!in_triangle( pt(0,6),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert(!in_triangle( pt(6,0),   pt(0,0), pt(0,3), pt(4,0) ));
-    // edge cases
-    assert( in_triangle( pt(2,0),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert( in_triangle( pt(3,0),   pt(0,0), pt(0,3), pt(4,0) ));
-    // corner cases
-    assert( in_triangle( pt(0,0),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert( in_triangle( pt(0,3),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert( in_triangle( pt(4,0),   pt(0,0), pt(0,3), pt(4,0) ));
+    typedef bool (*in_triangle_t)(pt, pt, pt, pt);
+    in_triangle_t in_triangle_fns[] = 
+    {
+        &in_triangle,
+        &in_triangle_open,
+        &in_triangle_2,
+        &in_triangle_2_open
+    } ;
 
-    /* open version */
-    assert( in_triangle_open( pt(1,1),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert(!in_triangle_open( pt(2,2),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert( in_triangle_open( pt(1,2),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert(!in_triangle_open( pt(0,6),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert(!in_triangle_open( pt(6,0),   pt(0,0), pt(0,3), pt(4,0) ));
-    // edge cases
-    assert(!in_triangle_open( pt(2,0),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert(!in_triangle_open( pt(3,0),   pt(0,0), pt(0,3), pt(4,0) ));
-    // corner cases
-    assert(!in_triangle_open( pt(0,0),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert(!in_triangle_open( pt(0,3),   pt(0,0), pt(0,3), pt(4,0) ));
-    assert(!in_triangle_open( pt(4,0),   pt(0,0), pt(0,3), pt(4,0) ));
+    for (int i = 0; i < 4; i++)
+    {
+        in_triangle_t fp = in_triangle_fns[i];
+
+        /* closed version */
+        assert( fp( pt(1,1),   pt(0,0), pt(0,3), pt(4,0) ));
+        assert(!fp( pt(2,2),   pt(0,0), pt(0,3), pt(4,0) ));
+        assert( fp( pt(1,2),   pt(0,0), pt(0,3), pt(4,0) ));
+        assert(!fp( pt(0,6),   pt(0,0), pt(0,3), pt(4,0) ));
+        assert(!fp( pt(6,0),   pt(0,0), pt(0,3), pt(4,0) ));
+        
+        // edge cases
+        assert( fp( pt(2,0),   pt(0,0), pt(0,3), pt(4,0) ) == (i+1)%2 );
+        assert( fp( pt(3,0),   pt(0,0), pt(0,3), pt(4,0) ) == (i+1)%2 );
+        // corner cases
+        assert( fp( pt(0,0),   pt(0,0), pt(0,3), pt(4,0) ) == (i+1)%2 );
+        assert( fp( pt(0,3),   pt(0,0), pt(0,3), pt(4,0) ) == (i+1)%2 );
+        assert( fp( pt(4,0),   pt(0,0), pt(0,3), pt(4,0) ) == (i+1)%2 );
+    }
 }
 
 void isParallel_test()
@@ -188,20 +170,33 @@ void isParallel_test()
 
 void xPtSeg_test()
 {
-    assert( xPtSeg( pt(3,3),  pt(2,2), pt(4,4) ));
-    assert(!xPtSeg( pt(3,3),  pt(2,3), pt(4,4) ));
-    assert( xPtSeg( pt(3,3),  pt(2,3), pt(4,3) ));
-    assert( xPtSeg( pt(3,3),  pt(0,3), pt(9,3) ));
-    assert(!xPtSeg( pt(3,4),  pt(3,3), pt(2,3) ));
-    assert(!xPtSeg( pt(3,4),  pt(2,3), pt(3,3) ));
-    assert(!xPtSeg( pt(3,3),  pt(2,2), pt(1,1) ));
-    assert(!xPtSeg( pt(3,6),  pt(1,2), pt(2,4) ));
-    // corner cases
-    assert( xPtSeg( pt(3,3),  pt(3,3), pt(4,4) ));
-    assert( xPtSeg( pt(3,3),  pt(3,3), pt(3,4) ));
-    assert( xPtSeg( pt(3,3),  pt(3,3), pt(4,3) ));
-    assert( xPtSeg( pt(3,3),  pt(4,4), pt(3,3) ));
-    assert( xPtSeg( pt(3,3),  pt(3,3), pt(3,3) ));
+    typedef bool (*xptseg_t)(pt, pt, pt);
+    xptseg_t xptseg_fns[] = 
+    {
+        &xPtSeg,
+        &xPtSeg_open,
+    } ;
+
+    for (int i = 0; i < 2; i++)
+    {
+        xptseg_t fp = xptseg_fns[i];
+
+        assert( fp( pt(3,3),  pt(2,2), pt(4,4) ));
+        assert(!fp( pt(3,3),  pt(2,3), pt(4,4) ));
+        assert( fp( pt(3,3),  pt(2,3), pt(4,3) ));
+        assert( fp( pt(3,3),  pt(0,3), pt(9,3) ));
+        assert(!fp( pt(3,4),  pt(3,3), pt(2,3) ));
+        assert(!fp( pt(3,4),  pt(2,3), pt(3,3) ));
+        assert(!fp( pt(3,3),  pt(2,2), pt(1,1) ));
+        assert(!fp( pt(3,6),  pt(1,2), pt(2,4) ));
+        // corner cases
+        assert( fp( pt(3,3),  pt(3,3), pt(4,4) ) == (fp == &xPtSeg) );
+        assert( fp( pt(3,3),  pt(3,3), pt(3,4) ) == (fp == &xPtSeg) );
+        assert( fp( pt(3,3),  pt(3,3), pt(4,3) ) == (fp == &xPtSeg) );
+        assert( fp( pt(3,3),  pt(4,4), pt(3,3) ) == (fp == &xPtSeg) );
+        assert( fp( pt(3,3),  pt(3,3), pt(3,3) ) == (fp == &xPtSeg) );
+        assert(!fp( pt(3,3),  pt(4,4), pt(4,4) ));
+    }
 }
 
 int main (int argc, char **argv)
