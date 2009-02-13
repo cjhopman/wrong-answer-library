@@ -5,6 +5,8 @@
  *
  *  Created on: 20090212
  *      Author: dhe
+ *
+ * All procedures are tested other than ones marked.
  */
 
 #include <cmath>
@@ -22,47 +24,53 @@ double dist(pt a, pt b) { return sqrt(norm(b-a)); }
 
 #define sign(a) (a == 0 ? 0 : a > 0 ? 1 : -1)
 
-//** NOT TESTED
-//pt perpendicular(pt p) { return p * polar(1.0, M_PI/2); }
+pt perpendicular(pt p) { return pt(-imag(p), real(p) ); }
 
-//** NOT TESTED
 // Returns nan if a == b.
 double distPtLine(pt p, pt a, pt b)
 {
     return (double)det(b-a, p-a) / dist(a, b);
 }
 
-//** NOT TESTED
 // Returns dist(p,a) if a == b. (change conditional to dot[ab] < 0 to return nan)
 double distPtSeg(pt p, pt a, pt b)
 {
     int dota = dot(b-a, p-a);
     int dotb = dot(a-b, p-b);
-    if (dota < 0)
+    if (dota <= 0)
         return dist(p, a);
-    if (dotb < 0)
+    if (dotb <= 0)
         return dist(p, b);
-    return det(b-a, p-a) / dist(a, b);
+    return abs((double)det(b-a, p-a)) / dist(a, b);
 }
 
-//** NOT TESTED
 /* True if a-b c-d parallel.
  *  - True if a == b or c == d    */
 bool isParallel(pt a, pt b, pt c, pt d)
 { return det(a-b, c-d) == 0; }
 
-//** NOT TESTED
 /* True if p is on segment a-b.
  *  - True at endpoints      */
 bool xPtSeg(pt p, pt a, pt b)
 {
+    if ( a == b )            // degenerate case
+        return p == a;
     return 
-        det(p-a, b-a) == 0 && 
+        det(p-a, b-a) == 0 &&
         dot(p-a, b-a) >= 0 && 
         dot(p-b, a-b) >= 0   ;
 }
 
-//** NOT TESTED
+/* True if p is on segment a-b.
+ *  - False at endpoints      */
+bool xPtSeg_open(pt p, pt a, pt b)
+{
+    return 
+        det(p-a, b-a) == 0 &&
+        dot(p-a, b-a) >  0 && 
+        dot(p-b, a-b) >  0   ;
+}
+
 /* True if segment a-b intersects segment c-d 
  *  -- True at endpoints. */
 bool xSegSeg(pt a, pt b, pt c, pt d) 
@@ -81,7 +89,6 @@ bool xSegSeg(pt a, pt b, pt c, pt d)
         sign(tc) && sign(tc) == sign(td) ;
 }
 
-//** NOT TESTED
 /* True if segment a-b intersects segment c-d 
  *  -- False at endpoints.
  *  -- False if segments are parallel. */
@@ -99,7 +106,6 @@ bool xSegSeg_open(pt a, pt b, pt c, pt d)
 
 /* True if segment a-b intersects segment c-d 
  *  -- Assumes that edge and corner cases never occur. */
-// Not tested
 bool xSegSeg_simple(pt a, pt b, pt c, pt d) 
 {
     return 
@@ -107,26 +113,30 @@ bool xSegSeg_simple(pt a, pt b, pt c, pt d)
         det(a-c,b-c) > 0 == det(b-d,a-d) > 0 ;
 }
 
-/* copied from Chris's code */
-//** NOT TESTED
 void barycentric(pt p, pt a, pt b, pt c, double L[3])
 {
-    int t = det(a-c, b-c);
-    L[0] = - det(b-c, p-c) / t;
-    L[1] =   det(a-c, p-c) / t;
+    double t = det(a-c, b-c);
+    L[0] = - (double)det(b-c, p-c) / t;
+    L[1] =   (double)det(a-c, p-c) / t;
     L[2] = 1 - L[0] - L[1];
 }
 
-/* copied from Chris's code */
-//** NOT TESTED
-bool in_triangle(pt p, pt a, pt b, pt c)
+/* True if p is in triangle abc, using barycentric coordinates
+ */
+bool in_triangle_2(pt p, pt a, pt b, pt c)
 {
     double L[3];
     barycentric(p, a, b, c, L);
-    return L1 >= 0 && L2 >= 0 && L3 >= 0;
+    return L[0] >= 0 && L[1] >= 0 && L[2] >= 0;
 }
 
-//** NOT TESTED
+bool in_triangle_2_open(pt p, pt a, pt b, pt c)
+{
+    double L[3];
+    barycentric(p, a, b, c, L);
+    return L[0] > 0 && L[1] > 0 && L[2] > 0;
+}
+
 /* True if p is in triangle abc
  *  - True if p is on edge or corner */
 bool in_triangle(pt p, pt a, pt b, pt c)
@@ -141,7 +151,6 @@ bool in_triangle(pt p, pt a, pt b, pt c)
         (!z3 || z3 == t)   ;
 }
 
-//** NOT TESTED
 /* True if p is in triangle abc
  *  - False if p is on edge or corner */
 bool in_triangle_open(pt p, pt a, pt b, pt c)

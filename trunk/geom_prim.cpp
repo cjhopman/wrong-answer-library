@@ -10,6 +10,8 @@
  *
  *  Created on: Nov 14, 2008
  *      Author: dhe
+ *
+ * All procedures are tested other than ones marked.
  */
 
 #include <cmath>
@@ -38,7 +40,6 @@ double dist(pt a, pt b) { return abs(b-a); }
 
 #define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
 
-//** NOT TESTED
 pt perpendicular(pt p) { return p * polar(1.0, M_PI/2); }
 
 // Tested.
@@ -194,12 +195,3 @@ bool in_triangle_open(pt p, pt a, pt b, pt c)
     return z2 && z1 == z2 && z2 == z3 ;
 }
 
-
-//** NOT TESTED
-// TODO: remove! why is this even here?
-int gcd(int a, int b)
-{
-    while (b != 0)
-    { int t=b; b = a%b; a=t; }
-    return a;
-}

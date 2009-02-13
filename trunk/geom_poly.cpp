@@ -11,6 +11,14 @@
 
 typedef vector<pt> polygon;
 
+//** NOT TESTED
+int gcd(int a, int b)
+{
+    while (b != 0)
+    { int t=b; b = a%b; a=t; }
+    return a;
+}
+
 /* Returns 2 * (area of polygon vv) */
 //** NOT TESTED
 double area_polygon(polygon &vv)
