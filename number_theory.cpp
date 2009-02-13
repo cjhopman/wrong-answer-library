@@ -77,6 +77,55 @@ map<long,long> trial_factor(long n)
     return f;
 }
 
+#include <stdint.h>
+
+/* finds all primes up to and including n */
+#define SIEVE_E1_GET(i) ( P[(i)/64]  & 1L << (i)%64 )
+#define SIEVE_E1_SET(i) ( P[(i)/64] |= 1L << (i)%64 )
+void sieve_eratosthenes(long n, vector<long> &pout)
+{
+    uint64_t *P = new uint64_t[n/64+1];
+    fill_n(P, n/64+1, 0);
+
+    for (long i = 2; i <= n; i++)
+        if (SIEVE_E1_GET(i) == 0) {
+            for (long k = 2; k*i <= n; k++)
+                SIEVE_E1_SET(k*i);
+            pout.push_back(i);
+        }
+
+    delete[] P;
+}
+
+/* same as first sieve, except 
+ *  - only consider odd numbers           
+ *  - stop at sqrt(n)                    
+ *  - cross out less numbers            
+ *      ( fails if n < 2 )                */
+#define SIEVE_E2_GET(i) ( P[(i)/128]  & 1L << (i)/2%64 )
+#define SIEVE_E2_SET(i) ( P[(i)/128] |= 1L << (i)/2%64 )
+void sieve_eratosthenes_2(long n, vector<long> &pout)
+{
+    uint64_t *P = new uint64_t[n/128+1];
+    fill_n(P, n/128+1, 0);
+
+    pout.push_back(2);
+
+    long i;
+    for (i = 3; i*i <= n; i += 2)
+        if (SIEVE_E2_GET(i) == 0) {
+            for (long k = i; k*i <= n; k += 2)
+                SIEVE_E2_SET(k*i);
+            pout.push_back(i);
+        }
+
+    for ( ; i <= n; i+= 2)
+        if (SIEVE_E2_GET(i) == 0)
+            pout.push_back(i);
+
+    delete[] P;
+}
+
 //** NOT TESTED
 /* Euler's totient function */
 long nt_phi(long n)

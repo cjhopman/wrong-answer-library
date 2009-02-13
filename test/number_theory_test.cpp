@@ -81,10 +81,55 @@ void multiplicative_function_test()
 
 }
 
+void sieve_test()
+{
+    typedef void (*sieve_t)(long, vector<long> &);
+    sieve_t sieve_fns[] = 
+    {
+        &sieve_eratosthenes,
+        &sieve_eratosthenes_2,
+    } ;
+
+    for (int i = 0; i < 2; i++)
+    {
+        vector<long> p;
+        sieve_t fp = sieve_fns[i];
+
+        p.clear();
+        fp(100000000, p);
+        assert(p.size() == 5761455);
+
+        p.clear();
+        fp(65537, p);
+        assert(p.size() == 6543);
+
+        p.clear();
+        fp(150, p);
+        assert(p.size() == 35);
+
+        p.clear();
+        fp(10, p);
+        assert(p.size() == 4);
+
+        p.clear();
+        fp(7, p);
+        assert(p.size() == 4);
+
+        p.clear();
+        fp(3, p);
+        assert(p.size() == 2);
+
+        p.clear();
+        fp(2, p);
+        assert(p.size() == 1);
+    }
+}
+
 int main (int argc, char **argv)
 {
     factor_test();
     multiplicative_function_test();
+    sieve_test();
     return 0;
 }
 
