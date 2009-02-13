@@ -66,6 +66,18 @@ double distPtSeg(pt p, pt a, pt b)
 bool isParallel(pt a, pt b, pt c, pt d)
 { return abs(det(a-b, c-d)) < EPS; }
 
+/* True if p is on segment a-b.
+ *  - True at endpoints      */
+//** NOT TESTED
+#include <iostream>
+bool xPtSeg(pt p, pt a, pt b)
+{
+    pt z = (p-a)/(b-a);
+    if (abs(b-a) < EPS)
+        return abs(p-a) < EPS;
+    return real(z) > -EPS && real(z) < 1+EPS && abs(imag(z)) < EPS;
+}
+
 /* Helper function: for xSegSeg
  * True if a-z, b-z, c-z are ordered in angle. (either direction)
  *  -- True if a-z b-z parallel or b-z c-z parallel. */
@@ -79,8 +91,25 @@ bool ordered(pt z, pt a, pt b, pt c)
 /* True if segment a-b crosses segment c-d 
  *  -- True at endpoints. */
 // Horribly broken; need rewrite.
-bool xSegSeg(pt a,pt b,pt c,pt d) 
+/*
+bool xSegSeg(pt a, pt b, pt c, pt d) 
 { return ordered(a,c,b,d) && ordered(d,b,c,a); }
+*/
+
+bool xSegSeg(pt a, pt b, pt c, pt d) 
+{
+    int ta = det(c-a,d-a),
+        tb = det(d-b,c-b),
+        tc = det(a-c,b-c),
+        td = det(b-d,a-d) ;
+    printf ("%d %d %d %d\n", ta, tb, tc, td);
+    return 
+        ta == 0 && xPtSeg(a, c, d) ||
+        tb == 0 && xPtSeg(b, d, c) ||
+        tc == 0 && xPtSeg(c, a, b) ||
+        td == 0 && xPtSeg(d, b, a) ||
+        ta && tb && tc && td && ta == tb && tc == td ;
+}
 
 /* Intersection of line a-b and line c-d
  *  -- Returns an "invalid" complex if a-b c-d parallel. (i.e. contains nan or inf)
