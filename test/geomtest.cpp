@@ -8,9 +8,8 @@
 #define equal(a, b) assert( a == b )
 #define ptinvalid(a) assert( isnan(imag(a)) || isnan(real(a)) || isinf(imag(a)) || isinf(real(a)) )
 
-int main()
+void distPtLine_test()
 {
-    /* distPtLine */
     approx( distPtLine( pt( 0, 0), pt( 1, 0), pt( 0, 1) ) , sqrt(2)/2 );
     approx( distPtLine( pt( 0, 0), pt( 3, 0), pt( 0, 4) ) , 3.0*4.0/5.0 );
     // edge cases
@@ -19,8 +18,10 @@ int main()
     approx( distPtLine( pt( 0, 0), pt( 0, 0), pt( 1, 0) ) , 0 );
     assert( isnan( distPtLine( pt( 0, 0), pt( 1, 0), pt( 1, 0) ) ) );
     assert( isnan( distPtLine( pt( 0, 0), pt( 0, 0), pt( 0, 0) ) ) );
+}
 
-    /* distPtSeg */
+void distPtSeg_test()
+{
     approx( distPtSeg( pt( 0, 0), pt( 1, 0), pt( 0, 1) ) , sqrt(2)/2 );
     approx( distPtSeg( pt( 0, 0), pt( 1, 1), pt( 2, 1) ) , sqrt(2) );
     approx( distPtSeg( pt( 0, 0), pt( 1, 0), pt( 0.5, 0) ) , 0.5 );
@@ -34,8 +35,10 @@ int main()
     approx( distPtSeg( pt( 0, 0), pt( 0, 0), pt( 0, 0) ) , 0 );
     approx( distPtSeg( pt( 0, 0), pt( 1, 1), pt( 1, 1) ) , sqrt(2) );
     approx( distPtSeg( pt( 0, 0), pt( 0, 0), pt( 0, 0) ) , 0 );
+}
 
-    /* xSegSeg */
+void xSegSeg_test()
+{
     assert( xSegSeg( pt(0,0), pt(1,1),  pt(0,1), pt(1,0) ) );
     assert(!xSegSeg( pt(0,0), pt(3,1),  pt(2,1), pt(9,2) ) );
     assert( xSegSeg( pt(0,0), pt(3,1),  pt(3,1), pt(9,2) ) );
@@ -69,8 +72,10 @@ int main()
     assert( xSegSeg( pt(0,0), pt(0,1),  pt(0,1), pt(1,1) ) );
     assert( xSegSeg( pt(0,0), pt(0,1),  pt(0,0), pt(0,1) ) );
     assert( xSegSeg( pt(0,0), pt(0,0),  pt(0,0), pt(0,0) ) );
+}
 
-    /* xLineLine */
+void xLineLine_test()
+{
     approx( xLineLine( pt(0,0), pt(1,1),  pt(1,0), pt(0,1) ) , pt(0.5,0.5) );
     approx( xLineLine( pt(0,0), pt(1,0),  pt(1,0), pt(1,1) ) , pt(1,0) );
     approx( xLineLine( pt(2,2), pt(8,8),  pt(3,4), pt(7,6) ) , pt(5,5) );
@@ -84,10 +89,47 @@ int main()
     ptinvalid( xLineLine( pt(0,0), pt(5,0),  pt(5,0), pt(7,0) ) );
     ptinvalid( xLineLine( pt(0,0), pt(0,0),  pt(5,0), pt(7,0) ) );
     ptinvalid( xLineLine( pt(0,0), pt(0,0),  pt(0,0), pt(0,0) ) );
+}
 
-    /* in_trangle_2 */
+void in_trangle_2_test()
+{
     assert( in_triangle_2( pt(1,1),   pt(0,0), pt(0,3), pt(4,0) ));
     assert(!in_triangle_2( pt(2,2),   pt(0,0), pt(0,3), pt(4,0) ));
+}
+
+void isParallel_test()
+{
+    assert(!isParallel( pt(0,0), pt(1,1),   pt(0,1), pt(1,0) ));
+    assert( isParallel( pt(0,0), pt(1,1),   pt(0,1), pt(1,2) ));
+    assert(!isParallel( pt(3,5), pt(8,2),   pt(1,1), pt(7,6) ));
+    assert( isParallel( pt(3,5), pt(8,2),   pt(1,3), pt(6,0) ));
+    assert(!isParallel( pt(4,8), pt(8,9),   pt(2,7), pt(5,8) ));
+    assert( isParallel( pt(4,8), pt(8,9),   pt(2,7), pt(6,8) ));
+    assert(!isParallel( pt(0,1), pt(0,2),   pt(0,0), pt(1,0) ));
+    assert( isParallel( pt(0,1), pt(0,2),   pt(1,1), pt(1,0) ));
+    // edge cases
+    assert( isParallel( pt(0,0), pt(3,0),   pt(0,0), pt(5,0) ));
+    assert( isParallel( pt(0,0), pt(3,0),   pt(1,0), pt(5,0) ));
+    assert( isParallel( pt(0,0), pt(3,0),   pt(3,0), pt(5,0) ));
+    assert( isParallel( pt(0,0), pt(1,0),   pt(4,0), pt(5,0) ));
+    assert( isParallel( pt(0,0), pt(3,0),   pt(0,0), pt(3,0) ));
+    assert( isParallel( pt(1,2), pt(2,4),   pt(3,6), pt(4,8) ));
+    assert( isParallel( pt(1,2), pt(4,8),   pt(2,4), pt(3,6) ));
+    // corner cases
+    assert( isParallel( pt(0,0), pt(0,0),   pt(0,1), pt(0,2) ));
+    assert( isParallel( pt(0,0), pt(0,0),   pt(0,3), pt(0,2) ));
+    assert( isParallel( pt(0,0), pt(0,0),   pt(1,3), pt(1,2) ));
+    assert( isParallel( pt(0,0), pt(0,0),   pt(1,1), pt(1,1) ));
+    assert( isParallel( pt(0,0), pt(0,0),   pt(0,0), pt(0,0) ));
+}
+
+int main (int argc, char **argv)
+{
+    distPtLine_test();
+    distPtSeg_test();
+    xSegSeg_test();
+    xLineLine_test();
+    isParallel_test();
     return 0;
 }
 
