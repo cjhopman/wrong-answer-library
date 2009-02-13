@@ -45,6 +45,7 @@ void xSegSeg_test()
     assert(!xSegSeg( pt(0,0), pt(3,2),  pt(2,1), pt(9,2) ) );
     assert( xSegSeg( pt(0,0), pt(100,0),  pt(0,1), pt(100,-1) ) );
     assert(!xSegSeg( pt(0,0), pt(100,0),  pt(0,1), pt(100, 1) ) );
+    assert( xSegSeg( pt(0,0), pt(2,8),  pt(1,6), pt(8,3) ) );
     // edge-corner cases
     {
         pt a(0,0), b(2,0), c(1,0), d(1,3);
