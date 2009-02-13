@@ -39,6 +39,8 @@ double dist(pt a, pt b) { return abs(b-a); }
 #define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
 
+#define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
+
 //** NOT TESTED
 pt perpendicular(pt p) { return p * polar(1.0, M_PI/2); }
 
@@ -71,30 +73,13 @@ bool isParallel(pt a, pt b, pt c, pt d)
  *  - True at endpoints      */
 bool xPtSeg(pt p, pt a, pt b)
 {
-    pt z = (p-a)/(b-a);
-    if (abs(b-a) < EPS)
-        return abs(p-a) < EPS;
-    return real(z) > -EPS && real(z) < 1+EPS && abs(imag(z)) < EPS;
+    return abs(det(p-a, b-a)) < EPS
+        && dot(p-a, b-a) > -EPS
+        && dot(p-b, a-b) > -EPS ;
 }
 
-/* Helper function: for xSegSeg
- * True if a-z, b-z, c-z are ordered in angle. (either direction)
- *  -- True if a-z b-z parallel or b-z c-z parallel. */
-bool ordered(pt z, pt a, pt b, pt c)
-{ 
-    double det1 = det(a-z, b-z);
-    double det2 = det(b-z, c-z);
-    return det1 < 0.0 == det2 < 0.0 || abs(det1) < EPS || abs(det2) < EPS;
-}
-
-/* True if segment a-b crosses segment c-d 
+/* True if segment a-b intersects segment c-d 
  *  -- True at endpoints. */
-// Horribly broken; need rewrite.
-/*
-bool xSegSeg(pt a, pt b, pt c, pt d) 
-{ return ordered(a,c,b,d) && ordered(d,b,c,a); }
-*/
-
 bool xSegSeg(pt a, pt b, pt c, pt d) 
 {
     int ta = det(c-a,d-a),
@@ -102,11 +87,37 @@ bool xSegSeg(pt a, pt b, pt c, pt d)
         tc = det(a-c,b-c),
         td = det(b-d,a-d) ;
     return 
-        ta == 0 && xPtSeg(a, c, d) ||
-        tb == 0 && xPtSeg(b, d, c) ||
-        tc == 0 && xPtSeg(c, a, b) ||
-        td == 0 && xPtSeg(d, b, a) ||
-        ta && tb && tc && td && ta == tb && tc == td ;
+        xPtSeg(a, c, d) ||
+        xPtSeg(b, d, c) ||
+        xPtSeg(c, a, b) ||
+        xPtSeg(d, b, a) ||
+        sign(ta) && sign(ta) == sign(tb) &&
+        sign(tc) && sign(tc) == sign(td) ;
+}
+
+/* True if segment a-b intersects segment c-d 
+ *  -- False at endpoints.
+ *  -- False if segments are parallel. */
+// Not tested
+bool xSegSeg_open(pt a, pt b, pt c, pt d) 
+{
+    int ta = det(c-a,d-a),
+        tb = det(d-b,c-b),
+        tc = det(a-c,b-c),
+        td = det(b-d,a-d) ;
+    return 
+        sign(ta) && sign(ta) == sign(tb) &&
+        sign(tc) && sign(tc) == sign(td) ;
+}
+
+/* True if segment a-b intersects segment c-d 
+ *  -- Assumes that edge and corner cases never occur. */
+// Not tested
+bool xSegSeg_simple(pt a, pt b, pt c, pt d) 
+{
+    return 
+        det(c-a,d-a) > 0 == det(d-b,c-b) > 0 &&
+        det(a-c,b-c) > 0 == det(b-d,a-d) > 0 ;
 }
 
 /* Intersection of line a-b and line c-d
