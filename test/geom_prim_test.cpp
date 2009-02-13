@@ -125,7 +125,6 @@ void in_triangle_test()
     {
         in_triangle_t fp = in_triangle_fns[i];
 
-        /* closed version */
         assert( fp( pt(1,1),   pt(0,0), pt(0,3), pt(4,0) ));
         assert(!fp( pt(2,2),   pt(0,0), pt(0,3), pt(4,0) ));
         assert( fp( pt(1,2),   pt(0,0), pt(0,3), pt(4,0) ));
