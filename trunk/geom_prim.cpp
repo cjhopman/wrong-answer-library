@@ -88,7 +88,6 @@ bool xPtSeg_open(pt p, pt a, pt b)
         dot(p-b, a-b) > EPS ;
 }
 
-#include <iostream>
 /* True if segment a-b intersects segment c-d 
  *  -- True at endpoints. */
 bool xSegSeg(pt a, pt b, pt c, pt d) 
