@@ -26,6 +26,16 @@ long gcd(long a, long b)
 long lcm(long a, long b) { return a / gcd(a, b) * b; }
 
 //** NOT TESTED
+pair<int,int> extended_gcd(long a, long b)
+{
+    if (a % b == 0)
+        return pair<int,int>(0, 1);
+    else {
+        pair<int,int> t = extended_gcd(b, a % b);
+        return pair<int,int>(t.second, t.first-t.second*(a/b));
+    }
+}
+//** NOT TESTED
 map<long,long> trial_factor(long n)
 {
     map<long,long> f;
