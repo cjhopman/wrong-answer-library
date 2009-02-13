@@ -26,6 +26,33 @@ long gcd(long a, long b)
 long lcm(long a, long b) { return a / gcd(a, b) * b; }
 
 //** NOT TESTED
+/* Calculates b ^ e */
+long ipow(long b, long e)
+{
+    long r = 1;
+    for ( ; e; e >>= 1) {
+        if (e & 1)
+            r *= b;
+        b *= b;
+    }
+    return r;
+}
+
+//** NOT TESTED
+/* Calculates b ^ e (mod m) */
+long mod_exp(long b, long e, int m)
+{
+    long r = 1;
+    for ( ; e; e >>= 1) {
+        if (e & 1)
+            r = (r * b) % m;
+        b *= b;
+        b %= m;
+    }
+    return r;
+}
+
+//** NOT TESTED
 pair<int,int> extended_gcd(long a, long b)
 {
     if (a % b == 0)
@@ -35,6 +62,7 @@ pair<int,int> extended_gcd(long a, long b)
         return pair<int,int>(t.second, t.first-t.second*(a/b));
     }
 }
+
 //** NOT TESTED
 map<long,long> trial_factor(long n)
 {
@@ -51,6 +79,7 @@ map<long,long> trial_factor(long n)
 }
 
 //** NOT TESTED
+/* Euler's totient function */
 long nt_phi(long n)
 {
     long t = 1;
@@ -65,18 +94,49 @@ long nt_phi(long n)
 }
 
 //** NOT TESTED
+/* Mobieus function */
 long nt_mu(long n)
 {
-    if (n == 1)
-        return 1;
-
+    if (n == 1) return 1;
     map<long,long> f = trial_factor(n);
-    
     for (map<long,long>::iterator i = f.begin(); i != f.end(); i++)
         if (i->second == 2)
             return 0;
 
     return f.size() % 2 == 0 ? 1 : -1;
+}
+
+//** NOT TESTED
+/* Number of divisors function */
+long nt_d(long n)
+{
+    int t = 1;
+    map<long,long> f = trial_factor(n);
+    for (map<long,long>::iterator i = f.begin(); i != f.end(); i++)
+        t *= i->second + 1;
+    return t;
+}
+
+//** NOT TESTED
+/* Sum of divisors function */
+long nt_sigma(long n)
+{
+    int t = 1;
+    map<long,long> f = trial_factor(n);
+    for (map<long,long>::iterator i = f.begin(); i != f.end(); i++)
+        t *= (ipow(i->first, i->second + 1) - 1) / (i->first - 1);
+    return t;
+}
+
+//** NOT TESTED
+/* Generalized sum of divisors function */
+long nt_sigma_k(long n, int k)
+{
+    int t = 1;
+    map<long,long> f = trial_factor(n);
+    for (map<long,long>::iterator i = f.begin(); i != f.end(); i++)
+        t *= (ipow(i->first, k * (i->second + 1) ) - 1) / (ipow(i->first, k) - 1);
+    return t;
 }
 
 // integer square root
