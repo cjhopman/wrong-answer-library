@@ -1,11 +1,11 @@
 /*
- * geom_poly.cpp
+ * lattice_poly.cpp
  *
  *  Created on: 20090212
  *      Author: dhe
  */
 
-#include "geom_prim.cpp"
+#include "lattice_prim.cpp"
 #include <vector>
 #include <algorithm>
 
@@ -35,3 +35,22 @@ bool inside_convex(pt p, polygon& vv)
             return false;
 	return true;
 }
+/* Number of boundary points - points in vv MUST be on lattice! */
+//** NOT TESTED
+int boundary(polygon &vv)
+{
+    int c = 0;
+    vv.push_back(*vv.begin());
+    for (int i = 1; i < vv.size(); i++)
+    {
+        pt t = vv[i] - vv[i-1];
+        c += abs(gcd( round(real(t)), round(imag(t)) ));
+    }
+    vv.pop_back();
+    return c;
+}
+
+/*
+ * Pick's theorem states A=I+B/2-1
+ */
+

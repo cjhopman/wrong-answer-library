@@ -1,14 +1,9 @@
 /*
- * geom_prim.cpp
+ * lattice_prim.cpp
  *
- * This is another set of geometry routines.
- * Significant differences from Chris's geometry.cpp are:
- *  - complex<coordinate_type> instead of pair<coordinate_type>
- *  - liberal use of 2D determinant and 2D dot product.
+ * Geometry primitives over lattices
  *
- *  This should result in less variables and shorter code.
- *
- *  Created on: Nov 14, 2008
+ *  Created on: 20090212
  *      Author: dhe
  */
 
@@ -17,69 +12,62 @@
 
 using namespace std;
 
-#define EPS 1e-10
+typedef complex<int> pt;
 
-typedef complex<double> pt;
+int dist2(pt a, pt b) { return norm(b-a); }
+double dist(pt a, pt b) { return sqrt(norm(b-a)); }
 
-double dist2(pt a, pt b) { return norm(b-a); }
-double dist(pt a, pt b) { return abs(b-a); }
-
-/* det(a, b) is used everywhere. We implement it as a macro.
- * 
- * det(a, b) = | ax ay |
- *             | bx by |
- *   (at least in 2D)
- */
-
-//#define det(a, b) (real(a)*imag(b) - imag(a)*real(b))
-//#define dot(a, b) (real(a)*real(b) + imag(a)*imag(b))
 #define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
 
-#define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
+#define sign(a) (a == 0 ? 0 : a > 0 ? 1 : -1)
 
 //** NOT TESTED
-pt perpendicular(pt p) { return p * polar(1.0, M_PI/2); }
+//pt perpendicular(pt p) { return p * polar(1.0, M_PI/2); }
 
-// Tested.
+//** NOT TESTED
 // Returns nan if a == b.
 double distPtLine(pt p, pt a, pt b)
 {
-    return abs(det(b-a, p-a)) / abs(b-a);
+    return (double)det(b-a, p-a) / dist(a, b);
 }
 
-// Tested.
+//** NOT TESTED
 // Returns dist(p,a) if a == b. (change conditional to dot[ab] < 0 to return nan)
 double distPtSeg(pt p, pt a, pt b)
 {
-    double dota = dot(b-a, p-a);
-    double dotb = dot(a-b, p-b);
-    if (dota < EPS)
-        return abs(p-a);
-    if (dotb < EPS)
-        return abs(p-b);
-    return abs(det(b-a, p-a)) / abs(b-a);
+    int dota = dot(b-a, p-a);
+    int dotb = dot(a-b, p-b);
+    if (dota < 0)
+        return dist(p, a);
+    if (dotb < 0)
+        return dist(p, b);
+    return det(b-a, p-a) / dist(a, b);
 }
 
+//** NOT TESTED
 /* True if a-b c-d parallel.
  *  - True if a == b or c == d    */
 bool isParallel(pt a, pt b, pt c, pt d)
-{ return abs(det(a-b, c-d)) < EPS; }
+{ return det(a-b, c-d) == 0; }
 
+//** NOT TESTED
 /* True if p is on segment a-b.
  *  - True at endpoints      */
 bool xPtSeg(pt p, pt a, pt b)
 {
-    return abs(det(p-a, b-a)) < EPS
-        && dot(p-a, b-a) > -EPS
-        && dot(p-b, a-b) > -EPS ;
+    return 
+        det(p-a, b-a) == 0 && 
+        dot(p-a, b-a) >= 0 && 
+        dot(p-b, a-b) >= 0   ;
 }
 
+//** NOT TESTED
 /* True if segment a-b intersects segment c-d 
  *  -- True at endpoints. */
 bool xSegSeg(pt a, pt b, pt c, pt d) 
 {
-    double
+    int 
         ta = det(c-a,d-a),
         tb = det(d-b,c-b),
         tc = det(a-c,b-c),
@@ -93,12 +81,13 @@ bool xSegSeg(pt a, pt b, pt c, pt d)
         sign(tc) && sign(tc) == sign(td) ;
 }
 
+//** NOT TESTED
 /* True if segment a-b intersects segment c-d 
  *  -- False at endpoints.
  *  -- False if segments are parallel. */
 bool xSegSeg_open(pt a, pt b, pt c, pt d) 
 {
-    double 
+    int
         ta = det(c-a,d-a),
         tb = det(d-b,c-b),
         tc = det(a-c,b-c),
@@ -118,12 +107,15 @@ bool xSegSeg_simple(pt a, pt b, pt c, pt d)
         det(a-c,b-c) > 0 == det(b-d,a-d) > 0 ;
 }
 
+//** NOT TESTED
 /* Intersection of line a-b and line c-d
  *  -- Returns an "invalid" complex if a-b c-d parallel. (i.e. contains nan or inf)
  */
+//TODO: remove?
+/*
 pt xLineLine(pt a, pt b, pt c, pt d)
 {
-    //assert( det(a-b, c-d) > EPS );
+    //assert( det(a-b, c-d) > 0 );
 
     double rx, ry;
     rx = det( pt( det(a,b), real(a-b) ),
@@ -133,6 +125,7 @@ pt xLineLine(pt a, pt b, pt c, pt d)
 
     return pt(rx, ry) / det(a-b, c-d);
 }
+*/
 
 /* copied from Chris's code; not tested */
 /*
@@ -155,6 +148,7 @@ bool in_triangle(pt _p, pt _a, pt _b, pt _c)
 }
 */
 
+//** NOT TESTED
 /* True if p is in triangle abc
  *  - True if p is on edge or corner */
 bool in_triangle(pt p, pt a, pt b, pt c)
@@ -169,6 +163,7 @@ bool in_triangle(pt p, pt a, pt b, pt c)
         (!z3 || z3 == t)   ;
 }
 
+//** NOT TESTED
 /* True if p is in triangle abc
  *  - False if p is on edge or corner */
 bool in_triangle_open(pt p, pt a, pt b, pt c)
@@ -177,14 +172,4 @@ bool in_triangle_open(pt p, pt a, pt b, pt c)
         z2 = sign(det(p-b, c-b)),
         z3 = sign(det(p-c, a-c)) ;
     return z2 && z1 == z2 && z2 == z3 ;
-}
-
-
-//** NOT TESTED
-// TODO: remove! why is this even here?
-int gcd(int a, int b)
-{
-    while (b != 0)
-    { int t=b; b = a%b; a=t; }
-    return a;
 }
