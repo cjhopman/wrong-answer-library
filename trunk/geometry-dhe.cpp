@@ -82,7 +82,8 @@ bool xPtSeg(pt p, pt a, pt b)
  *  -- True at endpoints. */
 bool xSegSeg(pt a, pt b, pt c, pt d) 
 {
-    int ta = det(c-a,d-a),
+    double
+        ta = det(c-a,d-a),
         tb = det(d-b,c-b),
         tc = det(a-c,b-c),
         td = det(b-d,a-d) ;
@@ -98,10 +99,10 @@ bool xSegSeg(pt a, pt b, pt c, pt d)
 /* True if segment a-b intersects segment c-d 
  *  -- False at endpoints.
  *  -- False if segments are parallel. */
-// Not tested
 bool xSegSeg_open(pt a, pt b, pt c, pt d) 
 {
-    int ta = det(c-a,d-a),
+    double 
+        ta = det(c-a,d-a),
         tb = det(d-b,c-b),
         tc = det(a-c,b-c),
         td = det(b-d,a-d) ;
@@ -137,6 +138,7 @@ pt xLineLine(pt a, pt b, pt c, pt d)
 }
 
 /* copied from Chris's code; not tested */
+/*
 void barycentric(pt _a, pt _b, pt _c, pt _p, double &L1, double &L2, double &L3)
 {
     pt a = _a - _c, b = _b - _c, p = _p - _c;
@@ -144,23 +146,38 @@ void barycentric(pt _a, pt _b, pt _c, pt _p, double &L1, double &L2, double &L3)
     L2 =   det(a, p) / det(a, b);
     L3 = 1 - L1 - L2;
 }
+*/
 
 /* copied from Chris's code; not tested */
+/*
 bool in_triangle(pt _p, pt _a, pt _b, pt _c)
 {
     double L1, L2, L3;
     barycentric(_a, _b, _c, _p, L1, L2, L3);
     return L1 > EPS && L2 > EPS && L3 > EPS;
 }
+*/
 
-// true if p is in triangle abc
-//** NOT TESTED
-bool in_triangle_2(pt p, pt a, pt b, pt c)
+/* True if p is in triangle abc
+ *  - True if p is on edge or corner */
+bool in_triangle(pt p, pt a, pt b, pt c)
 {
-    int z1 = det(p-a, b-a) < 0;
-    int z2 = det(p-b, c-b) < 0;
-    int z3 = det(p-c, a-c) < 0;
-    return z1 == z2 && z2 == z3;
+    int z1 = sign(det(p-a, b-a)),
+        z2 = sign(det(p-b, c-b)),
+        z3 = sign(det(p-c, a-c)) ;
+    int t = z1 ? z1 : z2 ? z2 : z3 ;
+    return
+        (!z1 || z1 == t) &&
+        (!z2 || z2 == t) &&
+        (!z3 || z3 == t)   ;
+}
+
+bool in_triangle_open(pt p, pt a, pt b, pt c)
+{
+    int z1 = sign(det(p-a, b-a)),
+        z2 = sign(det(p-b, c-b)),
+        z3 = sign(det(p-c, a-c)) ;
+    return z2 && z1 == z2 && z2 == z3 ;
 }
 
 /* Returns 2 * (area of polygon vv) */
