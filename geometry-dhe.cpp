@@ -39,6 +39,7 @@ double dist(pt a, pt b) { return abs(b-a); }
 #define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
 
+//** NOT TESTED
 pt perpendicular(pt p) { return p * polar(1.0, M_PI/2); }
 
 // Tested.
@@ -61,15 +62,14 @@ double distPtSeg(pt p, pt a, pt b)
     return abs(det(b-a, p-a)) / abs(b-a);
 }
 
-/* True if a-b c-d parallel. */
-//** NOT TESTED
+/* True if a-b c-d parallel.
+ *  - True if a == b or c == d    */
 bool isParallel(pt a, pt b, pt c, pt d)
 { return abs(det(a-b, c-d)) < EPS; }
 
 /* True if p is on segment a-b.
  *  - True at endpoints      */
 //** NOT TESTED
-#include <iostream>
 bool xPtSeg(pt p, pt a, pt b)
 {
     pt z = (p-a)/(b-a);
@@ -102,7 +102,6 @@ bool xSegSeg(pt a, pt b, pt c, pt d)
         tb = det(d-b,c-b),
         tc = det(a-c,b-c),
         td = det(b-d,a-d) ;
-    printf ("%d %d %d %d\n", ta, tb, tc, td);
     return 
         ta == 0 && xPtSeg(a, c, d) ||
         tb == 0 && xPtSeg(b, d, c) ||
