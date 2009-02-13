@@ -107,46 +107,24 @@ bool xSegSeg_simple(pt a, pt b, pt c, pt d)
         det(a-c,b-c) > 0 == det(b-d,a-d) > 0 ;
 }
 
+/* copied from Chris's code */
 //** NOT TESTED
-/* Intersection of line a-b and line c-d
- *  -- Returns an "invalid" complex if a-b c-d parallel. (i.e. contains nan or inf)
- */
-//TODO: remove?
-/*
-pt xLineLine(pt a, pt b, pt c, pt d)
+void barycentric(pt p, pt a, pt b, pt c, double L[3])
 {
-    //assert( det(a-b, c-d) > 0 );
-
-    double rx, ry;
-    rx = det( pt( det(a,b), real(a-b) ),
-              pt( det(c,d), real(c-d) ) );
-    ry = det( pt( det(a,b), imag(a-b) ),
-              pt( det(c,d), imag(c-d) ) );
-
-    return pt(rx, ry) / det(a-b, c-d);
+    int t = det(a-c, b-c);
+    L[0] = - det(b-c, p-c) / t;
+    L[1] =   det(a-c, p-c) / t;
+    L[2] = 1 - L[0] - L[1];
 }
-*/
 
-/* copied from Chris's code; not tested */
-/*
-void barycentric(pt _a, pt _b, pt _c, pt _p, double &L1, double &L2, double &L3)
+/* copied from Chris's code */
+//** NOT TESTED
+bool in_triangle(pt p, pt a, pt b, pt c)
 {
-    pt a = _a - _c, b = _b - _c, p = _p - _c;
-    L1 = - det(b, p) / det(a, b);
-    L2 =   det(a, p) / det(a, b);
-    L3 = 1 - L1 - L2;
+    double L[3];
+    barycentric(p, a, b, c, L);
+    return L1 >= 0 && L2 >= 0 && L3 >= 0;
 }
-*/
-
-/* copied from Chris's code; not tested */
-/*
-bool in_triangle(pt _p, pt _a, pt _b, pt _c)
-{
-    double L1, L2, L3;
-    barycentric(_a, _b, _c, _p, L1, L2, L3);
-    return L1 > EPS && L2 > EPS && L3 > EPS;
-}
-*/
 
 //** NOT TESTED
 /* True if p is in triangle abc

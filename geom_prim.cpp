@@ -70,11 +70,25 @@ bool isParallel(pt a, pt b, pt c, pt d)
  *  - True at endpoints      */
 bool xPtSeg(pt p, pt a, pt b)
 {
-    return abs(det(p-a, b-a)) < EPS
-        && dot(p-a, b-a) > -EPS
-        && dot(p-b, a-b) > -EPS ;
+    if ( abs(b-a) < EPS)            // check degenerate case a == b
+        return abs(p-a) < EPS;
+    return 
+        abs(det(p-a, b-a)) < EPS &&
+        dot(p-a, b-a) > -EPS && 
+        dot(p-b, a-b) > -EPS ;
 }
 
+/* True if p is on segment a-b.
+ *  - False at endpoints      */
+bool xPtSeg_open(pt p, pt a, pt b)
+{
+    return 
+        abs(det(p-a, b-a)) < EPS &&
+        dot(p-a, b-a) > EPS && 
+        dot(p-b, a-b) > EPS ;
+}
+
+#include <iostream>
 /* True if segment a-b intersects segment c-d 
  *  -- True at endpoints. */
 bool xSegSeg(pt a, pt b, pt c, pt d) 
@@ -95,7 +109,7 @@ bool xSegSeg(pt a, pt b, pt c, pt d)
 
 /* True if segment a-b intersects segment c-d 
  *  -- False at endpoints.
- *  -- False if segments are parallel. */
+ *  -- False if segments are colinear. */
 bool xSegSeg_open(pt a, pt b, pt c, pt d) 
 {
     double 
@@ -109,13 +123,12 @@ bool xSegSeg_open(pt a, pt b, pt c, pt d)
 }
 
 /* True if segment a-b intersects segment c-d 
- *  -- Assumes that edge and corner cases never occur. */
-// Not tested
+ *  -- Assumes that colinear and corner cases never occur. */
 bool xSegSeg_simple(pt a, pt b, pt c, pt d) 
 {
     return 
-        det(c-a,d-a) > 0 == det(d-b,c-b) > 0 &&
-        det(a-c,b-c) > 0 == det(b-d,a-d) > 0 ;
+        det(c-a,d-a) > EPS == det(d-b,c-b) > EPS &&
+        det(a-c,b-c) > EPS == det(b-d,a-d) > EPS ;
 }
 
 /* Intersection of line a-b and line c-d
@@ -134,26 +147,29 @@ pt xLineLine(pt a, pt b, pt c, pt d)
     return pt(rx, ry) / det(a-b, c-d);
 }
 
-/* copied from Chris's code; not tested */
-/*
-void barycentric(pt _a, pt _b, pt _c, pt _p, double &L1, double &L2, double &L3)
+void barycentric(pt p, pt a, pt b, pt c, double L[3])
 {
-    pt a = _a - _c, b = _b - _c, p = _p - _c;
-    L1 = - det(b, p) / det(a, b);
-    L2 =   det(a, p) / det(a, b);
-    L3 = 1 - L1 - L2;
+    double t = det(a-c, b-c);
+    L[0] = - det(b-c, p-c) / t;
+    L[1] =   det(a-c, p-c) / t;
+    L[2] = 1 - L[0] - L[1];
 }
-*/
 
-/* copied from Chris's code; not tested */
-/*
-bool in_triangle(pt _p, pt _a, pt _b, pt _c)
+/* True if p is in triangle abc, using barycentric coordinates
+ *  - Tested              */
+bool in_triangle_2(pt p, pt a, pt b, pt c)
 {
-    double L1, L2, L3;
-    barycentric(_a, _b, _c, _p, L1, L2, L3);
-    return L1 > EPS && L2 > EPS && L3 > EPS;
+    double L[3];
+    barycentric(p, a, b, c, L);
+    return L[0] > -EPS && L[1] > -EPS && L[2] > -EPS;
 }
-*/
+
+bool in_triangle_2_open(pt p, pt a, pt b, pt c)
+{
+    double L[3];
+    barycentric(p, a, b, c, L);
+    return L[0] > EPS && L[1] > EPS && L[2] > EPS;
+}
 
 /* True if p is in triangle abc
  *  - True if p is on edge or corner */
