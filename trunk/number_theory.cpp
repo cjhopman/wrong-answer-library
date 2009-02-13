@@ -63,7 +63,6 @@ pair<int,int> extended_gcd(long a, long b)
     }
 }
 
-//** NOT TESTED
 map<long,long> trial_factor(long n)
 {
     map<long,long> f;
