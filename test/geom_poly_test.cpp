@@ -3,18 +3,37 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
-#define ASSERT(x) assert((x))
-#define approx(a, b) assert( abs(a-b) < EPS)
-#define equal(a, b) assert( a == b )
-#define ptinvalid(a) assert( isnan(imag(a)) || isnan(real(a)) || isinf(imag(a)) || isinf(real(a)) )
 
+#include <vector>
+
+vector<polygon> test_pp;
+
+void initialize_test_polygons()
+{
+    while (1)
+    {
+        int n;
+        cin >> n;
+        if (n == 0) break;
+        polygon V;
+        for (int i = 0; i < n; i++)
+        {
+            int x, y;
+            cin >> x >> y;
+            V.push_back(pt(x,y));
+        }
+        test_pp.push_back(V);
+    }
+}
 
 void area_polygon_test()
 {
+
 }
 
 int main (int argc, char **argv)
 {
+    initialize_test_polygons();
     area_polygon_test();
     return 0;
 }

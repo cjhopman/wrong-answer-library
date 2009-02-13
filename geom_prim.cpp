@@ -23,18 +23,12 @@ using namespace std;
 
 typedef complex<double> pt;
 
-double dist2(pt a, pt b) { return norm(b-a); }
-double dist(pt a, pt b) { return abs(b-a); }
-
-/* det(a, b) is used everywhere. We implement it as a macro.
+/* 
+ * det(a, b) is used everywhere. We implement it as a macro.
  * 
  * det(a, b) = | ax ay |
- *             | bx by |
- *   (at least in 2D)
- */
+ *             | bx by |                                     */
 
-//#define det(a, b) (real(a)*imag(b) - imag(a)*real(b))
-//#define dot(a, b) (real(a)*real(b) + imag(a)*imag(b))
 #define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
 
@@ -42,14 +36,12 @@ double dist(pt a, pt b) { return abs(b-a); }
 
 pt perpendicular(pt p) { return p * polar(1.0, M_PI/2); }
 
-// Tested.
 // Returns nan if a == b.
 double distPtLine(pt p, pt a, pt b)
 {
     return abs(det(b-a, p-a)) / abs(b-a);
 }
 
-// Tested.
 // Returns dist(p,a) if a == b. (change conditional to dot[ab] < 0 to return nan)
 double distPtSeg(pt p, pt a, pt b)
 {
@@ -155,8 +147,7 @@ void barycentric(pt p, pt a, pt b, pt c, double L[3])
     L[2] = 1 - L[0] - L[1];
 }
 
-/* True if p is in triangle abc, using barycentric coordinates
- *  - Tested              */
+/* True if p is in triangle abc, using barycentric coordinates */
 bool in_triangle_2(pt p, pt a, pt b, pt c)
 {
     double L[3];

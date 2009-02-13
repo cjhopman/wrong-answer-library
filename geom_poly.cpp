@@ -11,35 +11,26 @@
 
 typedef vector<pt> polygon;
 
+/* Returns 2 * (area of polygon V) */
 //** NOT TESTED
-int gcd(int a, int b)
-{
-    while (b != 0)
-    { int t=b; b = a%b; a=t; }
-    return a;
-}
-
-/* Returns 2 * (area of polygon vv) */
-//** NOT TESTED
-double area_polygon(polygon &vv)
+double area_polygon(polygon &V)
 {
     double A = 0.0;
-    vv.push_back(*vv.begin());
 
-    for (int i = 1; i < vv.size(); i++)
-        A += det(vv[i-1], vv[i]);
+    for (int i = 0; i < V.size(); i++)
+        A += det( V[i], V[(i+1) % V.size()] );
 
-    vv.pop_back();
     return abs(A);
 }
 
 // vertices should be in counterclockwise order, with a0 == an
 //** NOT TESTED
-bool inside_convex(pt p, polygon& vv)
+bool inside_convex(pt p, polygon& V)
 {
-    vv.push_back(*vv.begin());
-	for (unsigned i = 1; i < vv.size(); i++)
-        if ( det(vv[i] - vv[i-1], p - vv[i-1]) < 0 )
+	for (unsigned i = 0; i < V.size(); i++)
+        if ( det( V[(i+1) % V.size()] - V[i], p - V[i] ) < 0 )
             return false;
 	return true;
 }
+
+

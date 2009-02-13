@@ -11,42 +11,42 @@
 
 typedef vector<pt> polygon;
 
-/* Returns 2 * (area of polygon vv) */
+/* Returns 2 * (area of polygon V) */
 //** NOT TESTED
-double area_polygon(polygon &vv)
+double area_polygon(polygon &V)
 {
     double A = 0.0;
-    vv.push_back(*vv.begin());
+    V.push_back(*V.begin());
 
-    for (int i = 1; i < vv.size(); i++)
-        A += det(vv[i-1], vv[i]);
+    for (int i = 1; i < V.size(); i++)
+        A += det(V[i-1], V[i]);
 
-    vv.pop_back();
+    V.pop_back();
     return abs(A);
 }
 
 // vertices should be in counterclockwise order, with a0 == an
 //** NOT TESTED
-bool inside_convex(pt p, polygon& vv)
+bool inside_convex(pt p, polygon& V)
 {
-    vv.push_back(*vv.begin());
-	for (unsigned i = 1; i < vv.size(); i++)
-        if ( det(vv[i] - vv[i-1], p - vv[i-1]) < 0 )
+    V.push_back(*V.begin());
+	for (unsigned i = 1; i < V.size(); i++)
+        if ( det(V[i] - V[i-1], p - V[i-1]) < 0 )
             return false;
 	return true;
 }
-/* Number of boundary points - points in vv MUST be on lattice! */
+/* Number of boundary points - points in V MUST be on lattice! */
 //** NOT TESTED
-int boundary(polygon &vv)
+int boundary(polygon &V)
 {
     int c = 0;
-    vv.push_back(*vv.begin());
-    for (int i = 1; i < vv.size(); i++)
+    V.push_back(*V.begin());
+    for (int i = 1; i < V.size(); i++)
     {
-        pt t = vv[i] - vv[i-1];
+        pt t = V[i] - V[i-1];
         c += abs(gcd( round(real(t)), round(imag(t)) ));
     }
-    vv.pop_back();
+    V.pop_back();
     return c;
 }
 
