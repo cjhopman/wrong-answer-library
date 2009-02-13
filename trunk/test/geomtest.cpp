@@ -123,6 +123,24 @@ void isParallel_test()
     assert( isParallel( pt(0,0), pt(0,0),   pt(0,0), pt(0,0) ));
 }
 
+void xPtSeg_test()
+{
+    assert( xPtSeg( pt(3,3),  pt(2,2), pt(4,4) ));
+    assert(!xPtSeg( pt(3,3),  pt(2,3), pt(4,4) ));
+    assert( xPtSeg( pt(3,3),  pt(2,3), pt(4,3) ));
+    assert( xPtSeg( pt(3,3),  pt(0,3), pt(9,3) ));
+    assert(!xPtSeg( pt(3,4),  pt(3,3), pt(2,3) ));
+    assert(!xPtSeg( pt(3,4),  pt(2,3), pt(3,3) ));
+    assert(!xPtSeg( pt(3,3),  pt(2,2), pt(1,1) ));
+    assert(!xPtSeg( pt(3,6),  pt(1,2), pt(2,4) ));
+    // corner cases
+    assert( xPtSeg( pt(3,3),  pt(3,3), pt(4,4) ));
+    assert( xPtSeg( pt(3,3),  pt(3,3), pt(3,4) ));
+    assert( xPtSeg( pt(3,3),  pt(3,3), pt(4,3) ));
+    assert( xPtSeg( pt(3,3),  pt(4,4), pt(3,3) ));
+    assert( xPtSeg( pt(3,3),  pt(3,3), pt(3,3) ));
+}
+
 int main (int argc, char **argv)
 {
     distPtLine_test();
@@ -130,6 +148,7 @@ int main (int argc, char **argv)
     xSegSeg_test();
     xLineLine_test();
     isParallel_test();
+    xPtSeg_test();
     return 0;
 }
 

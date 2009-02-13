@@ -69,7 +69,6 @@ bool isParallel(pt a, pt b, pt c, pt d)
 
 /* True if p is on segment a-b.
  *  - True at endpoints      */
-//** NOT TESTED
 bool xPtSeg(pt p, pt a, pt b)
 {
     pt z = (p-a)/(b-a);
