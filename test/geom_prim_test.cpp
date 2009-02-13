@@ -198,6 +198,13 @@ void xPtSeg_test()
     }
 }
 
+void perpendicular_test()
+{
+    approx( perpendicular(pt( 1, 3)), pt(-3, 1) );
+    approx( perpendicular(pt(-1, 3)), pt(-3,-1) );
+    approx( perpendicular(pt( 0, 0)), pt( 0, 0) );
+}
+
 int main (int argc, char **argv)
 {
     distPtLine_test();
@@ -207,6 +214,7 @@ int main (int argc, char **argv)
     isParallel_test();
     xPtSeg_test();
     in_triangle_test();
+    perpendicular_test();
     return 0;
 }
 
