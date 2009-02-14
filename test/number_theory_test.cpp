@@ -8,72 +8,80 @@
 
 void factor_test()
 {
-    map<long,long> f;
+    typedef map<long,long> (*factor_t)(long);
+    factor_t factor_fns[] = 
+    {
+        &trial_factor,
+        &pollard_factor,
+    } ;
 
-    f = trial_factor(10);
-    assert(
-        f.size() == 2 &&
-        f[2] == 1     &&
-        f[5] == 1        );
+    for (int i = 0; i < 2; i++)
+    {
+        map<long,long> f;
+        factor_t fp = factor_fns[i];
 
-    f = trial_factor(24);
-    assert(
-        f.size() == 2 &&
-        f[2] == 3     &&
-        f[3] == 1        );
+        f = fp(10);
+        assert(
+            f.size() == 2 &&
+            f[2] == 1     &&
+            f[5] == 1        );
 
-    f = trial_factor(4096);
-    assert(
-        f.size() == 1 &&
-        f[2] == 12       );
+        f = fp(24);
+        assert(
+            f.size() == 2 &&
+            f[2] == 3     &&
+            f[3] == 1        );
 
-    f = trial_factor(120);
-    assert(
-        f.size() == 3 &&
-        f[2] == 3     &&
-        f[3] == 1     &&
-        f[5] == 1        );
+        f = fp(4096);
+        assert(
+            f.size() == 1 &&
+            f[2] == 12       );
 
-    f = trial_factor(2L*2*3*13*13*17*17*17);
-    assert(
-        f.size() == 4 &&
-        f[ 2] == 2    &&
-        f[ 3] == 1    &&
-        f[13] == 2    &&
-        f[17] == 3       );
+        f = fp(120);
+        assert(
+            f.size() == 3 &&
+            f[2] == 3     &&
+            f[3] == 1     &&
+            f[5] == 1        );
 
-    f = trial_factor(4414);
-    assert(
-        f.size() == 2 &&
-        f[   2]  == 1 &&
-        f[2207]  == 1    );
+        f = fp(2L*2*3*13*13*17*17*17);
+        assert(
+            f.size() == 4 &&
+            f[ 2] == 2    &&
+            f[ 3] == 1    &&
+            f[13] == 2    &&
+            f[17] == 3       );
 
-    f = trial_factor(99623L*99643L);
-    assert(
-        f.size() == 2 &&
-        f[99623] == 1 &&
-        f[99643] == 1    );
+        f = fp(4414);
+        assert(
+            f.size() == 2 &&
+            f[   2]  == 1 &&
+            f[2207]  == 1    );
 
-    f = trial_factor(2);
-    assert(
-        f.size() == 1 &&
-        f[    2] == 1    );
+        f = fp(99623L*99643L);
+        assert(
+            f.size() == 2 &&
+            f[99623] == 1 &&
+            f[99643] == 1    );
 
-    f = trial_factor(101);
-    assert(
-        f.size() == 1 &&
-        f[  101] == 1    );
+        f = fp(2);
+        assert(
+            f.size() == 1 &&
+            f[    2] == 1    );
 
-    f = trial_factor(65537);
-    assert(
-        f.size() == 1 &&
-        f[65537] == 1    );
+        f = fp(101);
+        assert(
+            f.size() == 1 &&
+            f[  101] == 1    );
 
-    f = trial_factor(1);
-    assert( f.size() == 0 );
+        f = fp(65537);
+        assert(
+            f.size() == 1 &&
+            f[65537] == 1    );
 
-    f = trial_factor(0);
-    assert( f.size() == 0 );
+        f = fp(1);
+        assert( f.size() == 0 );
+    }
 }
 
 void multiplicative_function_test()
