@@ -120,6 +120,7 @@ double circle_3_points(double x1, double y1, double x2, double y2, double x3, do
 }
 
 // a will hold vertices x0,x1,...,xn,x0
+// starting at top left is important! (otherwise more cases are needed)
 void convex(polygon& a) {
 	int first = 0;
 	for (int i = 1; i < a.size(); i++)
