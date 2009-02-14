@@ -12,6 +12,8 @@
 #include <cmath>
 #include <map>
 #include <vector>
+#include <cstdlib>  // labs
+#include <stdint.h>
 
 using namespace std;
 
@@ -77,8 +79,6 @@ map<long,long> trial_factor(long n)
     return f;
 }
 
-#include <stdint.h>
-
 /* finds all primes up to and including n */
 #define SIEVE_E1_GET(i) ( P[(i)/64]  & 1L << (i)%64 )
 #define SIEVE_E1_SET(i) ( P[(i)/64] |= 1L << (i)%64 )
@@ -124,6 +124,44 @@ void sieve_eratosthenes_2(long n, vector<long> &pout)
             pout.push_back(i);
 
     delete[] P;
+}
+
+long pollard_cycle(long n, int c)
+{
+    long x = 2, y = 2, d = 1;
+    while (d == 1) {
+        x = (x*x + c) % n;
+        y = (y*y + c) % n;
+        y = (y*y + c) % n;
+        d = gcd(labs(x-y), n);
+    }
+    return d;
+}
+
+//** NOT TESTED
+#include <cstdio>
+map<long,long> pollard_factor(long n)
+{
+    map<long,long> fact;
+
+    for ( ; n % 2 == 0; n /= 2)
+        fact[2] += 1;
+
+    long d;
+    for ( ; n > 1; n /= d)
+    {
+        for (int c = -4; c <= 4; c++)
+        {
+            if (c == 0 || c == -2)
+                continue;
+            if ( n != (d = pollard_cycle(n, c)) )
+                break;
+        }
+
+        printf("%ld %ld\n", n, d);
+        fact[d] += 1;
+    }
+    return fact;
 }
 
 //** NOT TESTED
