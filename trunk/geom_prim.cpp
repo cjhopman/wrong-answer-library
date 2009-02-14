@@ -27,7 +27,11 @@ typedef complex<double> pt;
  * det(a, b) is used everywhere. We implement it as a macro.
  * 
  * det(a, b) = | ax ay |
- *             | bx by |                                     */
+ *             | bx by |                                     
+ *                                                           
+ * det(a, b) is also the magnitude of the cross product of 
+ *                     (ax, ay, 0) and (bx, by, 0) .
+ *                                                           */
 
 #define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
