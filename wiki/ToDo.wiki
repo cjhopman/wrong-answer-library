@@ -10,3 +10,9 @@ Convex hull:
 
 Root-finding:
   Weierstrauss
+
+= Other =
+Suffix tree
+rabin karp (hashing)
+Aho-Carrosak (sp)
+Kunth-Morris-Pratt
