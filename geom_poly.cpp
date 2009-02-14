@@ -7,6 +7,7 @@
 
 #include "geom_prim.cpp"
 #include <vector>
+#include <deque>
 #include <algorithm>
 
 typedef vector<pt> polygon;
@@ -33,4 +34,40 @@ bool inside_convex(pt p, polygon& V)
 	return true;
 }
 
+bool dict_less(pt a, pt b) {
+    if (abs(imag(a - b)) < EPS)
+        return real(a) < real(b);
+    return imag(a) < imag(b);
+}
 
+struct graham_sort {
+    pt p;
+    bool operator() (pt a, pt b) {
+        double det = det(a-p, b-p);
+        return abs(det) < EPS ? norm(a-p) < norm(b-p) : det < -EPS;
+    }
+};
+
+/*
+ * Creates a convex hull using Graham scan
+ *
+ *  - Outputs a convex hull containing points in 
+ *                      counterclockwise order
+ *                                                               */
+//** NOT TESTED
+polygon graham_scan(polygon V) // pass by value since we sort V
+{
+    deque<pt> s;               // we use deques because it's less typing
+    pt p = *min_element(V.begin(), V.end(), dict_less);
+
+    graham_sort gs = { p };
+    sort(V.begin(), V.end(), gs);
+
+    for (int i = 0; i < V.size(); i++)
+    {
+        while (s.size() >= 2 && det(s[1] - s[0], V[i]-s[0]) )
+            s.pop_front();
+        s.push_front(V[i]);
+    }
+    return polygon(s.begin(), s.end());
+}
