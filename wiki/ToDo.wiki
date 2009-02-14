@@ -13,6 +13,12 @@ Root-finding:
 
 = Other =
 Suffix tree
+
 rabin karp (hashing)
+
 Aho-Carrosak (sp)
+
 Kunth-Morris-Pratt
+
+
+Venora Diagram
