@@ -138,13 +138,13 @@ long pollard_cycle(long n, int c)
     return d;
 }
 
-//** NOT TESTED
-#include <cstdio>
+/* Pollard's rho method
+ *  - breaks if n == 0           */
 map<long,long> pollard_factor(long n)
 {
     map<long,long> fact;
 
-    for ( ; n % 2 == 0; n /= 2)
+    for ( ; n % 2 == 0; n /= 2)            // purge evenness first
         fact[2] += 1;
 
     long d;
@@ -152,13 +152,12 @@ map<long,long> pollard_factor(long n)
     {
         for (int c = -4; c <= 4; c++)
         {
-            if (c == 0 || c == -2)
+            if (c == 0 || c == -2)          // x^2, x^2-2 do not converge
                 continue;
             if ( n != (d = pollard_cycle(n, c)) )
                 break;
         }
 
-        printf("%ld %ld\n", n, d);
         fact[d] += 1;
     }
     return fact;
