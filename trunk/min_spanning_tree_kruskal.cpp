@@ -19,6 +19,8 @@
 
 using namespace std;
 
+typedef pair<int,int> edge;
+
 const int N = 750;
 
 int dist[N][N];
@@ -34,23 +36,25 @@ void ds_union(int i, int j) {
 	rep[ds_find(i)] = ds_find(j);
 }
 
-bool comp(const pair<int, int>& a, const pair<int, int>& b) {
+bool comp(const edge &a, const edge &b) {
 	return dist[a.first][a.second] < dist[b.first][b.second];
 }
 
-bool pred(const pair<int, int>& a) {
-	if (ds_find(a.first) == ds_find(a.second)) return true;
-	ds_union(a.first, a.second); return false;
+bool pred(const edge &a) {
+	if (ds_find(a.first) == ds_find(a.second)) 
+        return 1;
+	ds_union(a.first, a.second); 
+    return 0;
 }
 
-void mst(vector<pair<int, int> >& edges) {
+void mst(vector<edge> &edges) {
 	for (int i = 0; i < num_nodes; i++)
 		for (int j = i + 1; j < num_nodes; j++)
-			edges.push_back(pair<int, int>(i, j));
+			edges.push_back(edge(i, j));
 
 	sort(edges.begin(), edges.end(), comp);
 
-	vector<pair<int, int> >::iterator pend =
+	vector<edge>::iterator pend =
 		remove_if(edges.begin(), edges.end(), pred);
 
 	edges.erase(pend, edges.end());
