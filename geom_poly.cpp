@@ -63,11 +63,29 @@ polygon graham_scan(polygon V) // pass by value since we sort V
     graham_sort gs = { p };
     sort(V.begin(), V.end(), gs);
 
+    V.push_back(V[0]);
     for (int i = 0; i < V.size(); i++)
     {
-        while (s.size() >= 2 && det(s[1] - s[0], V[i]-s[0]) )
+        while ( s.size() >= 2 && det(s[1] - s[0], V[i]-s[0]) )
             s.pop_front();
         s.push_front(V[i]);
     }
+    s.pop_front();
     return polygon(s.begin(), s.end());
+}
+
+/* True if segment a-b crosses V 
+ *   - True at edge and corner cases */
+//** NOT TESTED
+bool xSegPoly(pt a, pt b, polygon V)
+{
+    return 0;
+}
+
+/* True if line a-b crosses V 
+ *   - True at edge and corner cases */
+//** NOT TESTED
+bool xLinePoly(pt a, pt b, polygon V)
+{
+    return 0;
 }
