@@ -65,6 +65,17 @@ pair<int,int> extended_gcd(long a, long b)
     }
 }
 
+/* 
+ * A small, non-inclusive list of primes:
+ * 3, 79, 83, 89, 97, 101, 499, 503, 991, 997, 1009, 2477, 2503, 4993, 4999, 5003, 
+ * 9973, 10007, 99991, 100003, 999983, 1000003, 1299827
+ */
+
+/*
+ * Asymptotic growth of primes (PNT):
+ *         p(n) ~ x/ln(x)
+ */
+
 map<long,long> trial_factor(long n)
 {
     map<long,long> f;
@@ -159,6 +170,29 @@ map<long,long> pollard_factor(long n)
         }
 
         fact[d] += 1;
+    }
+    return fact;
+}
+
+bool isSquare(long n)
+{
+    if ( (n & 2) || (n & 7) == 5 || (n & 11) == 8 )
+        return false;
+    int t = (int) round( sqrt((double) n) );
+    return t*t == n;
+}
+
+/* Newton's factorization method
+ *  - breaks if n is even            */
+map<long,long> newton_factor(long n)
+{
+    map<long,long> fact;
+    
+    for (int a = ceil(sqrt(n)) + 1; ; a++)
+    {
+        if (isSquare(a * a - N))
+        {
+        }
     }
     return fact;
 }
