@@ -22,3 +22,5 @@ Kunth-Morris-Pratt
 
 
 Venora Diagram
+
+Combinations (using bits)
