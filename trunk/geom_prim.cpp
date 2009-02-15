@@ -38,7 +38,7 @@ typedef complex<double> pt;
 
 #define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
 
-pt perpendicular(pt p) { return p * polar(1.0, M_PI/2); }
+pt perpendicular(pt p) { return p * pt(0,1); }
 
 // Returns nan if a == b.
 double distPtLine(pt p, pt a, pt b)
@@ -127,20 +127,39 @@ bool xSegSeg_simple(pt a, pt b, pt c, pt d)
         det(a-c,b-c) > EPS == det(b-d,a-d) > EPS ;
 }
 
+/* True if segment a-b intersects line --c-d-- 
+ *  -- Assumes that colinear and corner cases never occur. */
+// NOT TESTED
+bool xSegLine_simple(pt a, pt b, pt c, pt d) 
+{
+    return 
+        det(c-a,d-a) > EPS == det(d-b,c-b) > EPS ;
+}
+
 /* Intersection of line a-b and line c-d
  *  -- Returns an "invalid" complex if a-b c-d parallel. (i.e. contains nan or inf)
  */
 pt xLineLine(pt a, pt b, pt c, pt d)
 {
-    //assert( det(a-b, c-d) > EPS );
+    //assert( abs(det(a-b, c-d)) > EPS );
 
     double rx, ry;
-    rx = det( pt( det(a,b), real(a-b) ),
-              pt( det(c,d), real(c-d) ) );
-    ry = det( pt( det(a,b), imag(a-b) ),
-              pt( det(c,d), imag(c-d) ) );
+    rx = det( pt( det(a, b), real(a - b) ),
+              pt( det(c, d), real(c - d) ) );
+    ry = det( pt( det(a, b), imag(a - b) ),
+              pt( det(c, d), imag(c - d) ) );
 
     return pt(rx, ry) / det(a-b, c-d);
+}
+
+/* Returns the perpendicular bisector of segment a-b
+ *  - The segment with endpoints m and m+d will be a perpendicular bisector.
+ *  - d == 0 iff a == b                                                      */
+// NOT TESTED
+void perp_bisector(pt a, pt b, pt &m, pt &d)
+{
+    m = (a + b) / 2;
+    d = (b - a) * pt(0, 1);
 }
 
 void barycentric(pt p, pt a, pt b, pt c, double L[3])
@@ -156,14 +175,20 @@ bool in_triangle_2(pt p, pt a, pt b, pt c)
 {
     double L[3];
     barycentric(p, a, b, c, L);
-    return L[0] > -EPS && L[1] > -EPS && L[2] > -EPS;
+    return 
+        L[0] > -EPS && 
+        L[1] > -EPS && 
+        L[2] > -EPS   ;
 }
 
 bool in_triangle_2_open(pt p, pt a, pt b, pt c)
 {
     double L[3];
     barycentric(p, a, b, c, L);
-    return L[0] > EPS && L[1] > EPS && L[2] > EPS;
+    return 
+        L[0] > EPS && 
+        L[1] > EPS && 
+        L[2] > EPS   ;
 }
 
 /* True if p is in triangle abc
