@@ -24,3 +24,5 @@ Kunth-Morris-Pratt
 Venora Diagram
 
 Combinations (using bits)
+
+Computations in cylindrical coordinates and spherical coordinates
