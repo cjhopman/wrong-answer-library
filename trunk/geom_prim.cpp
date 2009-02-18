@@ -152,13 +152,15 @@ pt xLineLine(pt a, pt b, pt c, pt d)
     return pt(rx, ry) / det(a-b, c-d);
 }
 
+// TODO: less robust, shorter xLineLine
+
 /* Returns the perpendicular bisector of segment a-b
  *  - The segment with endpoints m and m+d will be a perpendicular bisector.
  *  - d == 0 iff a == b                                                      */
 // NOT TESTED
 void perp_bisector(pt a, pt b, pt &m, pt &d)
 {
-    m = (a + b) / 2;
+    m = (a + b) / pt(2, 0);
     d = (b - a) * pt(0, 1);
 }
 
