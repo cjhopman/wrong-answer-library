@@ -143,16 +143,10 @@ pt xLineLine(pt a, pt b, pt c, pt d)
 {
     //assert( abs(det(a-b, c-d)) > EPS );
 
-    double rx, ry;
-    rx = det( pt( det(a, b), real(a - b) ),
-              pt( det(c, d), real(c - d) ) );
-    ry = det( pt( det(a, b), imag(a - b) ),
-              pt( det(c, d), imag(c - d) ) );
-
-    return pt(rx, ry) / det(a-b, c-d);
+    return 
+        ( det(a, b) * (c - d) - det(c, d) * (a - b) )
+            / det(a-b, c-d) ;
 }
-
-// TODO: less robust, shorter xLineLine
 
 /* Returns the perpendicular bisector of segment a-b
  *  - The segment with endpoints m and m+d will be a perpendicular bisector.
