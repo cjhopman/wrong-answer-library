@@ -129,7 +129,7 @@ bool xSegSeg_simple(pt a, pt b, pt c, pt d)
 
 /* True if segment a-b intersects line --c-d-- 
  *  -- Assumes that colinear and corner cases never occur. */
-// NOT TESTED
+// Tested by ICPC 2005 Finals - GSM
 bool xSegLine_simple(pt a, pt b, pt c, pt d) 
 {
     return 
@@ -151,7 +151,6 @@ pt xLineLine(pt a, pt b, pt c, pt d)
 /* Returns the perpendicular bisector of segment a-b
  *  - The segment with endpoints m and m+d will be a perpendicular bisector.
  *  - d == 0 iff a == b                                                      */
-// NOT TESTED
 void perp_bisector(pt a, pt b, pt &m, pt &d)
 {
     m = (a + b) / pt(2, 0);
