@@ -127,6 +127,24 @@ bool xSegSeg_simple(pt a, pt b, pt c, pt d)
         det(a-c,b-c) > EPS == det(b-d,a-d) > EPS ;
 }
 
+/* True if segment a-b intersects segment c-d 
+ *  -- Assumes that colinear and corner cases never occur.
+ *  -- Cheesy method using xLineLine                        
+ *     This also applies to closed corners, xSegLine, etc, but
+ *          colinear cases need to be a special case           */
+// NOT TESTED
+bool xSegSeg_simple2(pt a, pt b, pt c, pt d) 
+{
+    pt x = 
+        ( det(a, b) * (c - d) - det(c, d) * (a - b) )
+            / det(a-b, c-d) ;
+    double s = real((x-a)/(b-a)), 
+           t = real((x-c)/(d-c)) ;
+    return 
+        EPS < s && s < 1-EPS &&
+        EPS < t && t < 1-EPS   ;
+}
+
 /* True if segment a-b intersects line --c-d-- 
  *  -- Assumes that colinear and corner cases never occur. */
 // Tested by ICPC 2005 Finals - GSM
