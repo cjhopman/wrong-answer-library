@@ -27,7 +27,7 @@ bool visited[N];
 int path[N];
 
 
-bool bellman_ford(int& c) {
+bool not_bellman_ford(int& c) {
 	int dist[N];
 	fill(path, path + N, -1);
 	fill(dist, dist + N, 100000000);
