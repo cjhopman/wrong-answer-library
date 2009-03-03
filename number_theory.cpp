@@ -17,6 +17,22 @@
 
 using namespace std;
 
+/* Division algorithm, but works for negative dividend and divisors.
+ * Correctness of div() and ldiv() is platform specfiic!
+ *   - Mandate: y = d * x + r                                        */
+// NOT TESTED
+ldiv_t ldiv_correct(long y, long x)
+{
+    long d = abs(y) / abs(x), 
+         r = abs(y) % abs(x) ;
+    if ( y < 0 )
+    { r = x - r; d += 1; }
+    if ( y < 0 ^ x < 0 )
+        d = -d;
+    ldiv_t result = { d, r };
+    return result;
+}
+
 //** NOT TESTED
 long gcd(long a, long b)
 {
