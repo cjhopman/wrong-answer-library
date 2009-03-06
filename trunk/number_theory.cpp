@@ -43,6 +43,69 @@ long gcd(long a, long b)
 
 long lcm(long a, long b) { return a / gcd(a, b) * b; }
 
+/* TODO: What does this return? positive only? smallest dist from 0? */
+//** NOT TESTED
+pair<int,int> extended_gcd(long a, long b)
+{
+    if (a % b == 0)
+        return pair<int,int>(0, 1);
+    else {
+        pair<int,int> t = extended_gcd(b, a % b);
+        return pair<int,int>(t.second, t.first-t.second*(a/b));
+    }
+}
+
+/*
+ * Calculates x s.t. a * x \equiv 1 (\mod n).
+ * Assumes x exists, i.e. gcd(a, n) == 1.
+ */
+// NOT TESTED
+int mult_inverse(int a, int n)
+{
+    return extended_gcd(a, n).first;
+}
+
+/*
+ *    Let d = \gcd(a, n) .
+ *    Then a * x \equiv b (\mod n) has d solutions if d \div b, and zero
+ *    solutions otherwise.
+ */
+vector<int> lin_cong(int a, int b, int n)
+{
+    vector<int> X;
+    int d = gcd(a, n);
+    if (b % d == 0) {
+        int x = extended_gcd(a, n).first * b / d;
+        for (int i = 0; i < d; i++) {
+            X.push_back((x + n) % n);
+            x += n / d;
+        }
+    }
+    return X;
+}
+
+/* Chinese remainder theorem
+ *  - assume n's are pairwise relatively prime
+ */
+// NOT TESTED
+long crt(long *a, long *n, long r)
+{
+    long N = 1;
+    for (int k = 0; k < r; k++)
+        N *= n[k];
+
+    long s = 0;
+    for (int k = 0; k < r; k++)
+    {
+        long p = N / n[k];
+        long x = extended_gcd(p, n[k]).first;
+        s += a[k] * p * x;
+        s %= N;
+    }
+    return s;
+}
+
+
 //** NOT TESTED
 /* Calculates b ^ e */
 long ipow(long b, long e)
@@ -68,17 +131,6 @@ long mod_exp(long b, long e, int m)
         b %= m;
     }
     return r;
-}
-
-//** NOT TESTED
-pair<int,int> extended_gcd(long a, long b)
-{
-    if (a % b == 0)
-        return pair<int,int>(0, 1);
-    else {
-        pair<int,int> t = extended_gcd(b, a % b);
-        return pair<int,int>(t.second, t.first-t.second*(a/b));
-    }
 }
 
 /* 
@@ -200,6 +252,8 @@ bool isSquare(long n)
 
 /* Newton's factorization method
  *  - breaks if n is even            */
+//TODO
+/*
 map<long,long> newton_factor(long n)
 {
     map<long,long> fact;
@@ -212,6 +266,7 @@ map<long,long> newton_factor(long n)
     }
     return fact;
 }
+*/
 
 //** NOT TESTED
 /* Euler's totient function */
