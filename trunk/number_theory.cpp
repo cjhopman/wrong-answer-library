@@ -22,38 +22,39 @@ using namespace std;
  *   - Mandate: y = d * x + r                                        */
 // NOT TESTED
 
-div_t div_correct(int y, int x)
+ldiv_t div_correct(long y, long x)
 {
-    div_t v = div(y, x);
+    ldiv_t v = ldiv(y, x);
     if (y < 0 && v.rem != 0) {
         v.quot -= 1;
-        v.rem += x;
+        v.rem += abs(x);
     }
     return v;
 }
 
-// - Input must be positive!
+/* - At least one input must be non-zero.
+ * - Output is always non-negative.
+ */
 long gcd(long a, long b)
 {
     while (b != 0)
-    { long t=b; b = a%b; a=t; }
+    { long t=b; b = div_correct(a, b).rem; a=t; }
     return a;
 }
 
 long lcm(long a, long b) { return a / gcd(a, b) * b; }
-
-/* - Input must be positive!
+/* - At least one input must be non-zero.
  * - Output: return.first should be the closest to 0, and may be negative.
  */
 // Somewhat tested - not exhaustive.
-pair<int,int> extended_gcd(int a, int b)
+pair<long,long> extended_gcd(long a, long b)
 {
     if (a % b == 0)
-        return pair<int,int>(0, 1);
+        return pair<long,long>(0, 1);
     else {
-        div_t v = div_correct(a, b);
-        pair<int,int> t = extended_gcd(b, v.rem);
-        return pair<int,int>(t.second, t.first - t.second * v.quot);
+        ldiv_t v = div_correct(a, b);
+        pair<long,long> t = extended_gcd(b, v.rem);
+        return pair<long,long>(t.second, t.first - t.second * v.quot);
     }
 }
 
@@ -62,27 +63,25 @@ pair<int,int> extended_gcd(int a, int b)
  * Assumes x exists, i.e. gcd(a, n) == 1.
  */
 // NOT TESTED
-int mult_inverse(int a, int n)
+long mult_inverse(long a, long n)
 {
-    return (extended_gcd(a, n).first + n) % n;
+    return extended_gcd(a, n).first;
 }
-
-#define cgru(z, w) ((z) + (w)) % (w)
 
 /*
  *    Let d = \gcd(a, n) .
  *    Then a * x \equiv b (\mod n) has d solutions if d \div b, and zero
  *    solutions otherwise.
- *     - Input: a, b, n must be positive!
+ *     - Input: 0 <= a, b < n.
  */
-vector<int> lin_cong(int a, int b, int n)
+vector<long> lin_cong(long a, long b, long n)
 {
-    vector<int> X;
-    int d = gcd(a, n);
+    vector<long> X;
+    long d = gcd(a, n);
     if (b % d == 0) {
-        int x = cgru(extended_gcd(a, n).first, n) * b / d;
+        long x = extended_gcd(a, n).first * b / d;
         for (int i = 0; i < d; i++) {
-            X.push_back(x % n);
+            X.push_back(div_correct(x, n).rem);
             x += n / d;
         }
     }
