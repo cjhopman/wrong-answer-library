@@ -19,21 +19,22 @@ using namespace std;
 
 /* Division algorithm, but works for negative dividend and divisors.
  * Correctness of div() and ldiv() is platform specfiic!
- *   - Mandate: y = d * x + r                                        */
-// NOT TESTED
-
+ *   - Mandate: y = d * x + r                                      
+ * - Tested using Bipartite Numbers
+ */
 ldiv_t div_correct(long y, long x)
 {
     ldiv_t v = ldiv(y, x);
     if (y < 0 && v.rem != 0) {
         v.quot -= 1;
-        v.rem += abs(x);
+        v.rem += labs(x);
     }
     return v;
 }
 
 /* - At least one input must be non-zero.
  * - Output is always non-negative.
+ * - Tested using Bipartite Numbers
  */
 long gcd(long a, long b)
 {
@@ -45,8 +46,8 @@ long gcd(long a, long b)
 long lcm(long a, long b) { return a / gcd(a, b) * b; }
 /* - At least one input must be non-zero.
  * - Output: return.first should be the closest to 0, and may be negative.
+ * - Tested using Bipartite Numbers
  */
-// Somewhat tested - not exhaustive.
 pair<long,long> extended_gcd(long a, long b)
 {
     if (a % b == 0)
@@ -65,7 +66,7 @@ pair<long,long> extended_gcd(long a, long b)
 // NOT TESTED
 long mult_inverse(long a, long n)
 {
-    return extended_gcd(a, n).first;
+    return div_correct(extended_gcd(a, n).first, n).rem;
 }
 
 /*
@@ -73,6 +74,7 @@ long mult_inverse(long a, long n)
  *    Then a * x \equiv b (\mod n) has d solutions if d \div b, and zero
  *    solutions otherwise.
  *     - Input: 0 <= a, b < n.
+ *  Tested using Bipartite Numbers
  */
 vector<long> lin_cong(long a, long b, long n)
 {
@@ -341,4 +343,23 @@ int isqrt(double n)
     for (s = n; abs(t-s) > 0.5; s = t)
         t = 0.5 * (s + n / s);
     return floor(s);
+}
+
+/* Catalan numbers
+ * 1, 1, 2, 5, 14, 42, 132, 429, etc
+ */
+//** NOT TESTED
+vector<big> cat;
+big catalan(int n)
+{
+    while (cat.size() <= n)
+    {
+        if (cat.size() == 0)
+            cat.push_back(1LL);
+        big s = 0LL;
+        for (int i = 0; i < cat.size(); i++)
+            s += cat[i] * cat[cat.size()-i-1];
+        cat.push_back(s);
+    }
+    return cat[n];
 }
