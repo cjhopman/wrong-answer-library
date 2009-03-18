@@ -21,6 +21,7 @@ typedef valarray<cbigf>		distr;
 //Uses the Cooley-Tukey algorithm to perform a Fourier transform of f.
 // Note that size of f must be a power of two
 //	Switching sign changes from fft to ifft
+//NOT TESTED
 distr fft(const distr& f, bigf sign = 1.)
 {
 	distr res(f.size());
