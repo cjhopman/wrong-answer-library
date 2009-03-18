@@ -105,11 +105,10 @@ pair<poly,poly> div(const poly& a, const poly& b)
 //Computes a derivative of a polynomial
 poly deriv(const poly& p)
 {
-    if(p.size() == 0)
-        return p;
-    poly r(p.size() - 1);
+    if(p.size() == 0) return p;
+    poly r(p.size()-1);
     for(int i=0; i<r.size(); i++)
-        r[i] = p[i] * field(i+1);
+        r[i] = p[i+1] * field(i+1);
     return r;
 }
 
@@ -156,12 +155,14 @@ int main(int argc, char ** argv)
     pair<poly,poly> res = div(a * b, b);
     
     cout 
+         << "A(1) = " << eval(a, 1) << endl
          << "trim(C) = " << trim(c) << endl
          << "A = " << a << endl
          << "B = " << b << endl
          << "A*B = " << (a * b) << endl
          << "A/B = " << res.first << endl
-         << "A%B = " << res.second << endl;
+         << "A%B = " << res.second << endl
+         << "A' = " << deriv(a) << endl;
     
     
     
