@@ -1,21 +1,22 @@
 //Polynomial srithmetic stuff
-// Stuff to add:
 //	Polynomial class
 //		Addition
 //		Multiplication
 //		Division
-//	Root finding
-//		Newton's method
-//		Weierstrass
 //	Calculus
 //		Derivative
 //		Integral
+//
+// Stuff to add:
+//
+//	Root finding
+//		Newton's method
+//		Weierstrass
 //	Algebra stuff
 //		Resultant (checks for common zeros)
 // 	Change of basis
 //		Grobner
 //		Dirac
-//		FFT -- Moved to external file
 
 
 #include <iostream>
@@ -112,6 +113,19 @@ poly deriv(const poly& p)
     return r;
 }
 
+
+//Computes the path integral from a to b
+//NOT TESTED
+field integral(const poly& p, field a, field b)
+{
+    field sa = 0., sb = 0., xa = a, xb = b;
+    for(int i=0; i<p.size(); i++, xa *= a, xb *= b)
+    {
+        sa += xa * p[i] / field(i+1);
+        sb += xb * p[i] / field(i+1);
+    }
+    return sb - sa;
+}
 
 //Converts a degree sequence to a polynomial
 poly seq_to_poly(const poly& s)
