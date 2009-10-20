@@ -15,24 +15,23 @@ void generate_combos(int n, int k) {
 	while (com[k - 1] < n) {
 
 		for (int i = 0; i < k; i++)
-			cout << (i ? ", " : "") << com[i];
+			cout << com[i] << " ";
 		cout << endl;
 
 		int t = k - 1;
 		while (t != 0 && com[t] == n - k + t) t--;
-		com[t]++;
 		for (int i = t + 1; i < k; i++) com[i] = com[i - 1] + 1;
 	}
 }
 
+// use for large n or small k, O(n! / (n - k)!)
 void generate_permutations(int n, int k) {
 	int perm[100];
 	for (int i = 0; i < n; i++) perm[i] = i;
 	int j = k;
 	while (true) {
-
 		for (int i = 0; i < k; i++)
-			cout << (i ? ", " : "") << perm[i];
+			cout << perm[i] << " ";
 		cout << endl;
 
 		if (j < n) {
@@ -41,6 +40,7 @@ void generate_permutations(int n, int k) {
 			int t = k - 2;
 			while (t >= 0 && perm[t] > perm[t + 1]) t--;
 			if (t < 0) break;
+			reverse(perm + t + 1, perm + k);
 			rotate(perm + t + 1, perm + k, perm + n);
 			swap(perm[t], *lower_bound(perm + t + 1, perm + n, perm[t]));
 			j = k;
@@ -67,10 +67,10 @@ void kth_permutation(int n, int k) {
 
 int main(int argc, char ** argv)
 {
-	//generate_permutations(50, 3);
+	//generate_permutations(30, 3);
 	//generate_combos(50, 3);
-	for (int i = 0; i < 6; i++)
-		kth_permutation(3, i);
+	//for (int i = 0; i < 6; i++)
+	//	kth_permutation(3, i);
     return 0;
 }
 
