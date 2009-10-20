@@ -1,21 +1,12 @@
 /*
  * min_spanning_tree_kruskal.cpp
  *
- *  Created on: Nov 9, 2008
- *      Author: Chris
- */
-
-/*
  * Tested.
- *
  */
 
 
 #include <algorithm>
 #include <vector>
-#include <iostream>
-#include <list>
-#include <cmath>
 
 using namespace std;
 
@@ -28,8 +19,7 @@ int rep[N];
 int num_nodes;
 
 int ds_find(int i) {
-	if (rep[i] == i) return i;
-	return rep[i] = ds_find(rep[i]);
+	return rep[i] == i ? i : rep[i] = ds_find(i);
 }
 
 void ds_union(int i, int j) {
@@ -40,13 +30,6 @@ bool comp(const edge &a, const edge &b) {
 	return dist[a.first][a.second] < dist[b.first][b.second];
 }
 
-bool pred(const edge &a) {
-	if (ds_find(a.first) == ds_find(a.second)) 
-        return 1;
-	ds_union(a.first, a.second); 
-    return 0;
-}
-
 void mst(vector<edge> &edges) {
 	for (int i = 0; i < num_nodes; i++)
 		for (int j = i + 1; j < num_nodes; j++)
@@ -54,8 +37,12 @@ void mst(vector<edge> &edges) {
 
 	sort(edges.begin(), edges.end(), comp);
 
-	vector<edge>::iterator pend =
-		remove_if(edges.begin(), edges.end(), pred);
+	int n = 0;
+	for (int i = 0; i < edges.size(); i++)
+		if (ds_find(edges[i].first) != ds_find(edges[i].second)) {
+			ds_union(edges[i].first, edges[i].second);
+			edges[n++] = edges[i];
+		}
 
 	edges.erase(pend, edges.end());
 }
