@@ -1,53 +1,84 @@
 /*
  * shortest-path.cpp
  *
- *  Created on: Nov 14, 2008
- *      Author: Chris
- */
-
-
-#include <map>
-#include <queue>
-#include <iostream>
-#include <algorithm>
-#include <functional>
-#include <cstring>
-#include <sstream>
-#include <string>
-
-/*
  * Tested: UVA10801
  */
 
+
+#include <queue>
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <sstream>
+
 using namespace std;
 
-typedef map<int, int> node;
 
-const int N = 1005;
+const int N = 101;
 int source, sink;
-node graph[N];
-int path[N];
-bool visited[N];
+int graph[N][N];
+int prev[N];
 
 typedef pair<int, int> edge;
-typedef pair<int, edge> q_pair; // <cost, <to, from> > --- default < compares cost first
+typedef pair<int, edge> q_pair; // <cost, <from, to> > --- default < compares cost first
 
-// djikstra's
-bool bfs(int& c) {
-	fill(visited, visited + N, false);
-	priority_queue<q_pair, vector<q_pair>, greater<q_pair> > q;
-	q.push(q_pair(0, edge(source, -1)));
-	while (!q.empty()) {
-		q_pair qp = q.top(); q.pop();
-		int n = qp.second.first;
-		path[n] = qp.second.second;
-		visited[n] = true;
-		if (n == sink) { c += qp.first; return true; }
-		for (node::iterator iter = graph[n].begin(); iter != graph[n].end(); iter++) {
-			if (visited[iter->first]) continue;
-			q.push(q_pair(qp.first + graph[n][iter->first], edge(iter->first, n)));
+bool dijkstra(int& cost) {
+	int best[N];
+
+	fill(prev, prev + N, -1);
+	fill(best, best + N, 1000000000);
+
+	priority_queue<q_pair, vector<q_pair>, greater<q_pair> > pq;
+	pq.push(q_pair(0, edge(source, source)));
+	best[0] = 0;
+
+	while (!pq.empty()) {
+		q_pair curr = pq.top(); pq.pop();
+		int c = curr.second.second;
+
+		if (prev[c] >= 0) continue;
+		prev[c] = curr.second.first;
+		if (c == sink) { cost += curr.first; return true; }
+
+		for (int n = 0; n < N; n++) {
+			if (prev[n] >= 0 || graph[c][n] > 100000000) continue;
+			if (best[n] <= curr.first + graph[c][n]) continue;
+			best[n] = curr.first + graph[c][n];
+			pq.push(q_pair(best[n], edge(c, n)));
 		}
 	}
 	return false;
+}
+
+int main() {
+	int n;
+	while (cin >> n >> sink) {
+		int sp[N];
+		for (int i = 0; i < n; i++)
+			cin >> sp[i];
+		string line;
+		getline(cin, line);
+		fill(graph[0], graph[N], 1000000000);
+		for (int e = 0; e < n; e++) {
+			getline(cin, line);
+			stringstream in(line);
+			int stops[N];
+			int ns = 0;
+			while (in >> stops[ns]) { ns++; }
+			for (int i = 0; i < ns; i++) {
+				for (int j = 0; j < i; j++) {
+					int s = stops[i], t = stops[j];
+					graph[s][t] = graph[t][s] = min(graph[s][t] == 0 ? 1000000000 : graph[s][t], abs(s - t) * sp[e] + 60);
+				}
+			}
+		}
+
+		int c = 0;
+		source = 0;
+		if (!sink) cout << 0 << endl;
+		else if (dijkstra(c)) cout << c - 60 << endl;
+		else cout << "IMPOSSIBLE" << endl;
+	}
+	return 0;
 }
 
