@@ -36,12 +36,12 @@ bool dijkstra(int& cost) {
 		q_pair curr = pq.top(); pq.pop();
 		int c = curr.second.second;
 
-		if (prev[c] >= 0) continue;
+		if (best[c] <= curr.first) continue;
 		prev[c] = curr.second.first;
 		if (c == sink) { cost += curr.first; return true; }
 
 		for (int n = 0; n < N; n++) {
-			if (prev[n] >= 0 || graph[c][n] > 100000000) continue;
+			if (graph[c][n] > 100000000) continue;
 			if (best[n] <= curr.first + graph[c][n]) continue;
 			best[n] = curr.first + graph[c][n];
 			pq.push(q_pair(best[n], edge(c, n)));
