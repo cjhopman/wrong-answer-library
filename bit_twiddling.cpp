@@ -25,7 +25,7 @@ void generate_combos(big n, big k)
     
         //Do stuff with combination x
         for(big i=0; i<n; i++)
-            cout << ((x & ((big)1<<i)) != 0 ? '1' : '0');
+			if ((x >> i) & 1) cout << i << " ";
         cout << endl;
         
     }
