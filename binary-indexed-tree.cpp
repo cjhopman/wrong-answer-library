@@ -8,6 +8,7 @@
  * O(mlogn) where m is number of operations and n is range
  *
  * Note: if all of (2) come after all of (1) use counting sort instead
+ *		 N must be == (1 << K) + 1 for some K.
  *
  * TESTED ON UVA 10474
  */
