@@ -6,16 +6,13 @@
  */
 
 /*
- * Runtime:	UVA820 0.990
- *
- *
+ * Runtime:	UVA820 0.020
  */
 
 #include <map>
 #include <queue>
 #include <iostream>
 #include <algorithm>
-#include <functional>
 
 using namespace std;
 
@@ -24,40 +21,42 @@ typedef map<int, int> node;
 const int N = 105;
 int source, sink;
 node graph[N];
-bool visited[N];
-int path[N];
+int prev[N];
 
-bool bfs(int from = source, int to = sink) {
-	fill(visited, visited + N, false);
+bool bfs() {
+	fill(prev, prev + N, -1);
 	queue<int> q;
 	q.push(source);
+	prev[source] = source;
 	while (!q.empty()) {
-		int n = q.front(); q.pop();
-		if (n == sink) return true;
-		for (node::iterator iter = graph[n].begin(); iter != graph[n].end(); iter++) {
-			if (visited[iter->first] || iter->second <= 0) continue;
-			path[iter->first] = n;
-			q.push(iter->first);
-			visited[iter->first] = true;
+		int c = q.front(); q.pop();
+		if (c == sink) return true;
+		for (node::iterator iter = graph[c].begin(); iter != graph[c].end(); iter++) {
+			int i = iter->first;
+			if (prev[i] >= 0 || graph[c][i] <= 0) continue;
+			prev[i] = c;
+			q.push(i);
 		}
 	}
 	return false;
 }
 
-int max_flow() {
-	int flow = 0;
-	while (bfs()) {
-		flow++;
-		int prev = path[sink], curr = sink;
-		while (curr != source) {
-			graph[curr][prev]++; graph[prev][curr]--;
-			curr = prev; prev = path[prev];
-		}
-	}
-	return flow;
+int update() {
+	int ret = 1000000000;
+	for (int c = sink, p = prev[c]; c != source; c = p, p = prev[c])
+		ret = min(ret, graph[p][c]);
+	for (int c = sink, p = prev[c]; c != source; c = p, p = prev[c])
+		graph[p][c] -= ret, graph[c][p] += ret;
+	return ret;
 }
 
-int flow_bfs_lists_main() {
+int max_flow() {
+	int ret = 0;
+	while (bfs()) ret += update();
+	return ret ;
+}
+
+int main() {
 	int network_id = 1;
 	while (true) {
 		int num_nodes, num_edges;

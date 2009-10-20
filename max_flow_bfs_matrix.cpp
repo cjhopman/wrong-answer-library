@@ -5,52 +5,58 @@
  *      Author: Chris
  */
 
-#include <map>
+/*
+ * Runtime:	UVA820 0.024
+ */
+
 #include <queue>
 #include <iostream>
 #include <algorithm>
-#include <functional>
 
 using namespace std;
 
 const int N = 105;
 int source, sink;
 int graph[N][N];
-bool visited[N];
-int path[N];
+int prev[N];
 int num_nodes;
 
-bool bfs(int from = source, int to = sink) {
-	fill(visited, visited + N, false);
+bool bfs() {
+	fill(prev, prev + N, -1);
 	queue<int> q;
-	q.push(from);
+	q.push(source);
+	prev[source] = source;
 	while (!q.empty()) {
-		int n = q.front(); q.pop();
-		if (n == to) return true;
+		int c = q.front();
+		q.pop();
+		if (c == sink) return true;
 		for (int i = 0; i < N; i++) {
-			if (visited[i] || graph[n][i] <= 0) continue;
-			path[i] = n;
+			if (prev[i] >= 0 || graph[c][i] <= 0) continue;
+			prev[i] = c;
 			q.push(i);
-			visited[i] = true;
 		}
 	}
 	return false;
 }
 
+int update() {
+	int ret = 1000000000;
+	for (int c = sink, p = prev[c]; c != source; c = p, p = prev[c])
+		ret = min(ret, graph[p][c]);
+	for (int c = sink, p = prev[c]; c != source; c = p, p = prev[c])
+		graph[p][c] -= ret, graph[c][p] += ret;
+	return ret;
+}
+
 int max_flow() {
 	int flow = 0;
 	while (bfs()) {
-		flow++;
-		int prev = path[sink], curr = sink;
-		while (curr != source) {
-			graph[curr][prev]++; graph[prev][curr]--;
-			curr = prev; prev = path[prev];
-		}
+		flow += update();
 	}
 	return flow;
 }
 
-int flow_bfs_matrix_main() {
+int main() {
 	int network_id = 1;
 	while (true) {
 		int num_edges;
