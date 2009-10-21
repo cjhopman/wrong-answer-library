@@ -1,5 +1,6 @@
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -12,11 +13,10 @@ typedef vector<pdd> polygon;
 #define y(a) ((a).second)
 
 double ccw(pdd& a, pdd& b, pdd& c) {
-	int v = (x(b) - x(a)) * (y(c) - y(a)) - (y(b) - y(a)) * (x(c) - x(a));
-	return v;
+	return (x(b) - x(a)) * (y(c) - y(a)) - (y(b) - y(a)) * (x(c) - x(a));
 }
 
-pii ps;
+pdd ps;
 bool comp(pdd a, pdd b) {
 	return atan2(y(a) - y(ps), x(a) - x(ps)) < atan2(y(b) - y(ps), x(b) - x(ps));
 }
@@ -29,7 +29,7 @@ polygon convex(polygon p) {
 
 	int m = 3;
 	for (int i = 3; i < p.size(); i++) {
-		while (m > 1 && ccw(p[m - 2], p[m - 1], p[i]) <= EPS) m--;
+		while (m > 1 && ccw(p[m - 2], p[m - 1], p[i]) < EPS) m--;
 		swap(p[m++], p[i]);
 	}
 	return polygon(p.begin(), p.begin() + m);
