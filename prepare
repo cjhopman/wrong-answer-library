@@ -1,0 +1,16 @@
+mkdir print > /dev/null 2>&1
+rm print/* > /dev/null 2>&1
+
+for x in `ls *.cpp`
+do 
+rm $x.temp > /dev/null 2>&1 
+# remove trailing whitespace
+sed -e 's/\s\+$\| \+\ze\t//g' $x \
+# collapse >1 blank lines to one blank line
+	| sed -n '1h;1!H;${;g;s/\/\*\$[^$]*\n*\(^[^$]*\n\)*\$\*\///g;p;}' \
+# remove special comments and blocks. That is, removes everything between
+# /*$ and $*/ including something of the form  /*$*/ ... /*$*/
+	| sed -n '1h;1!H;${;g;s/\n\n\n*/\n\n/g;p;}' > print/$x.temp
+cp print/$x.temp print/$x
+rm print/$x.temp
+done

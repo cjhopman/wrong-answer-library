@@ -1,6 +1,9 @@
 /* Longest increasing subsequence
  * TESTED: UVA 481
  */
+#include <iostream>
+#include <algorithm>
+using namespace std;
 
 const int N = 1000000;
 int seq[N];
@@ -11,6 +14,7 @@ int len;
 bool comp(int a, int b) {
 	return seq[a] < seq[b];
 }
+
 
 int lis() {
 	int ret = 1;
@@ -28,6 +32,9 @@ int lis() {
 	return ret;
 }
 
+
+
+/*$*/
 void print(int i) {
 	if (i < 0) return;
 	print(prev[i]);
@@ -41,4 +48,5 @@ int main() {
 	print(m[len - 1]);
 	return 0;
 }
+/*$*/
 
