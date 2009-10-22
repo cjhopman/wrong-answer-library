@@ -67,6 +67,7 @@ distr conv(const distr a, const distr b)
 }
 
 
+/*$*/
 //Test code
 int main(int argc, char** argv)
 {
@@ -103,3 +104,4 @@ int main(int argc, char** argv)
 	
 	return 0;
 }
+/*$*/
