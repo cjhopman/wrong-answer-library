@@ -119,54 +119,11 @@ double circle_3_points(double x1, double y1, double x2, double y2, double x3, do
 	return dist(cx, cy, x1, y1);
 }
 
-// a will hold vertices x0,x1,...,xn,x0
-// starting at top left is important! (otherwise more cases are needed)
-void convex(polygon& a) {
-	int first = 0;
-	for (int i = 1; i < a.size(); i++)
-		first = a[first].second < a[i].second || a[first].second == a[i].second
-			&& a[first].first > a[i].first ? i : first;
-	polygon b;
-	double p = -10; int prev = first, next = -1;
-	b.push_back(a[first]);
-	while (next != first) {
-		double n_val = 10;
-		for (int i = 0; i < a.size(); i++) {
-			if (i == prev) continue;
-			double v = atan2(a[i].second - a[prev].second, a[i].first - a[prev].first);
-			if (v > p - EPS && v < n_val) { n_val = v; next = i; }
-		}
-		b.push_back(a[next]);
-		p = n_val; prev = next;
-	}
-	swap(a, b);
-}
-
-// vertices should be in counterclockwise order, with a0 == an
-bool inside_convex(point p, polygon& a) {
-	for (unsigned i = 1; i < a.size(); i++) {
-		if ((a[i].first - a[i - 1].first) * (p.second - a[i - 1].second)
-				- (a[i].second - a[i - 1].second) * (p.first - a[i - 1].first) < 0)
-			return false;
-	}
-	return true;
-}
-
-// a0 == an, returns area * 2
-double area2(polygon& a) {
-	double area = 0;
-	for(unsigned i = 1; i < a.size(); i++)
-		area += (a[i - 1].first * a[i].second) - (a[i - 1].second * a[i].first);
-	return area;
-}
-
 // takes latitude/longitude in degrees as normally specified
 double great_circle(double lat1, double lon1, double lat2, double lon2) {
 	lat1 *= M_PI / 180; lat2 *= M_PI / 180; lon1 *= M_PI / 180; lon2 *= M_PI / 180;
 	return acos(cos(lat1) * cos(lat2) * cos(lon1 - lon2) + sin(lat1) * (sin(lat2)));
 }
-
-int main() { return 0; }
 
 
 
