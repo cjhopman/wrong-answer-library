@@ -91,6 +91,7 @@ int min_cost_max_flow(int& c) {
 	return flow;
 }
 
+/*$*/
 int main() {
 	int ncases;
 	cin >> ncases;
@@ -148,3 +149,4 @@ int main() {
 	}
 	return 0;
 }
+/*$*/

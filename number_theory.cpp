@@ -19,7 +19,7 @@ using namespace std;
 
 /* Division algorithm, but works for negative dividend and divisors.
  * Correctness of div() and ldiv() is platform specfiic!
- *   - Mandate: y = d * x + r                                      
+ *   - Mandate: y = d * x + r
  * - Tested using Bipartite Numbers
  */
 ldiv_t div_correct(long y, long x)
@@ -139,9 +139,9 @@ long mod_exp(long b, long e, int m)
     return r;
 }
 
-/* 
+/*
  * A small, non-inclusive list of primes:
- * 3, 79, 83, 89, 97, 101, 499, 503, 991, 997, 1009, 2477, 2503, 4993, 4999, 5003, 
+ * 3, 79, 83, 89, 97, 101, 499, 503, 991, 997, 1009, 2477, 2503, 4993, 4999, 5003,
  * 9973, 10007, 99991, 100003, 999983, 1000003, 1299827
  */
 
@@ -182,10 +182,10 @@ void sieve_eratosthenes(long n, vector<long> &pout)
     delete[] P;
 }
 
-/* same as first sieve, except 
- *  - only consider odd numbers           
- *  - stop at sqrt(n)                    
- *  - cross out less numbers            
+/* same as first sieve, except
+ *  - only consider odd numbers
+ *  - stop at sqrt(n)
+ *  - cross out less numbers
  *      ( fails if n < 2 )                */
 #define SIEVE_E2_GET(i) ( P[(i)/128]  & 1L << (i)/2%64 )
 #define SIEVE_E2_SET(i) ( P[(i)/128] |= 1L << (i)/2%64 )

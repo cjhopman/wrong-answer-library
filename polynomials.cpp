@@ -1,4 +1,4 @@
-//Polynomial srithmetic stuff
+//Polynomial arithmetic stuff
 //	Polynomial class
 //		Addition
 //		Multiplication
@@ -7,16 +7,18 @@
 //		Derivative
 //		Integral
 //
-// Stuff to add:
-//
-//	Root finding
-//		Newton's method
-//		Weierstrass
-//	Algebra stuff
-//		Resultant (checks for common zeros)
-// 	Change of basis
-//		Grobner
-//		Dirac
+/*$
+ * Stuff to add:
+ *
+ *	Root finding
+ *		Newton's method
+ *		Weierstrass
+ *	Algebra stuff
+ *		Resultant (checks for common zeros)
+ * 	Change of basis
+ *		Grobner
+ *		Dirac
+ $*/
 
 
 #include <iostream>
@@ -146,9 +148,9 @@ poly weierstrauss_root(const poly& p)
 
 
 
+
+/*$*/
 //Test code starts here
-
-
 
 int main(int argc, char ** argv)
 {
@@ -182,3 +184,4 @@ int main(int argc, char ** argv)
     
     return 0;
 }
+/*$*/
