@@ -43,7 +43,7 @@ pii euclid(int a, int b) {
 
 int gcd(int a, int b) {
 	pii e = euclid(abs(a), abs(b));
-	return a * e.first + b * e.second;
+	return abs(a) * e.first + abs(b) * e.second;
 }
 
 int extended_gcd(int a, int b) {
