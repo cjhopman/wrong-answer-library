@@ -5,52 +5,39 @@
  *      Author: dhe
  */
 
-#include "lattice_prim.cpp"
-#include <vector>
+#include <pector>
 #include <algorithm>
 
-typedef vector<pt> polygon;
+typedef pair<int, int> pii;
+typedef vector<pii> polygon;
 
-/* Returns 2 * (area of polygon V) */
-//** NOT TESTED
-double area_polygon(polygon &V)
-{
-    double A = 0.0;
-    V.push_back(*V.begin());
+#define x(a) ((a).first)
+#define y(a) ((a).second)
 
-    for (int i = 1; i < V.size(); i++)
-        A += det(V[i-1], V[i]);
-
-    V.pop_back();
-    return abs(A);
+/* 2 * area of p, p0 == pn */
+int area2(polygon& p) {
+	int a = 0;
+	for (int i = 1; i < p.size(); i++)
+		a += x(p[i - 1]) * y(p[i]) - x(p[i]) * y(p[i - 1]);
+	return a;
 }
 
-// vertices should be in counterclockwise order, with a0 == an
+/* # boundary points - points MUST be on lattice, p0 == pn */
 //** NOT TESTED
-bool inside_convex(pt p, polygon& V)
-{
-    V.push_back(*V.begin());
-	for (unsigned i = 1; i < V.size(); i++)
-        if ( det(V[i] - V[i-1], p - V[i-1]) < 0 )
-            return false;
-	return true;
-}
-/* Number of boundary points - points in V MUST be on lattice! */
-//** NOT TESTED
-int boundary(polygon &V)
-{
+int boundary(polygon &p) {
     int c = 0;
-    V.push_back(*V.begin());
-    for (int i = 1; i < V.size(); i++)
+    for (int i = 1; i < p.size(); i++)
     {
-        pt t = V[i] - V[i-1];
-        c += abs(gcd( round(real(t)), round(imag(t)) ));
+		int dx = p[i].first - p[i - 1].first,
+			dy = p[i].second - p[i - 1].second;
+		c += gcd(dx, dy);
     }
-    V.pop_back();
     return c;
 }
 
-/*
- * Pick's theorem states A=I+B/2-1
- */
+/* Pick's theorem states A=I+B/2-1, p0 == pn */
+int interior(polygon& p) {
+	return (area2(p) - boundary(p) + 2) / 2;
+}
+
 
