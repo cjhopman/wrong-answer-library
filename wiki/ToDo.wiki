@@ -2,10 +2,6 @@
 
 = Geometry =
 
-Convex hull:
-  Graham Scan
-
-
 = Other math =
 
 Root-finding:
@@ -18,11 +14,8 @@ rabin karp (hashing)
 
 Aho-Carrosak (sp)
 
-Kunth-Morris-Pratt
-
+Knuth-Morris-Pratt
 
 Venora Diagram
-
-Combinations (using bits)
 
 Computations in cylindrical coordinates and spherical coordinates
