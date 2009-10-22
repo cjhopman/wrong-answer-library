@@ -44,6 +44,7 @@ ostream& operator<<(ostream& o, const big& a) {
 	return o;
 }
 
+/*$*/
 int main() {
 	big p(1), c(1), t, top;
 	top.vals[6] = 1;
@@ -57,4 +58,4 @@ int main() {
 	}
 	return 0;
 }
-
+/*$*/
