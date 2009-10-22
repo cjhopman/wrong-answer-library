@@ -166,51 +166,17 @@ map<long,long> trial_factor(long n)
     return f;
 }
 
-/* finds all primes up to and including n */
-#define SIEVE_E1_GET(i) ( P[(i)/64]  & 1L << (i)%64 )
-#define SIEVE_E1_SET(i) ( P[(i)/64] |= 1L << (i)%64 )
-void sieve_eratosthenes(long n, vector<long> &pout)
-{
-    uint64_t *P = new uint64_t[n/64+1];
-    fill_n(P, n/64+1, 0);
-
-    for (long i = 2; i <= n; i++)
-        if (SIEVE_E1_GET(i) == 0) {
-            for (long k = 2; k*i <= n; k++)
-                SIEVE_E1_SET(k*i);
-            pout.push_back(i);
-        }
-
-    delete[] P;
-}
-
-/* same as first sieve, except
- *  - only consider odd numbers
- *  - stop at sqrt(n)
- *  - cross out less numbers
- *      ( fails if n < 2 )                */
-#define SIEVE_E2_GET(i) ( P[(i)/128]  & 1L << (i)/2%64 )
-#define SIEVE_E2_SET(i) ( P[(i)/128] |= 1L << (i)/2%64 )
-void sieve_eratosthenes_2(long n, vector<long> &pout)
-{
-    uint64_t *P = new uint64_t[n/128+1];
-    fill_n(P, n/128+1, 0);
-
-    pout.push_back(2);
-
-    long i;
-    for (i = 3; i*i <= n; i += 2)
-        if (SIEVE_E2_GET(i) == 0) {
-            for (long k = i; k*i <= n; k += 2)
-                SIEVE_E2_SET(k*i);
-            pout.push_back(i);
-        }
-
-    for ( ; i <= n; i+= 2)
-        if (SIEVE_E2_GET(i) == 0)
-            pout.push_back(i);
-
-    delete[] P;
+/* finds all primes up to n */
+void sieve(int n, vector<int>& p) {
+	vector<bool> s(n, 1);
+	int i = 2;
+	for (; i * i < n; i++) {
+		if (!s[i]) continue;
+		p.push_back(i);
+		for (int j = i * i; j < n; j += i) s[j] = 0;
+	}
+	for (i = i & 1 ? i : i + 1; i < n; i += 2)
+		if (s[i]) p.push_back(i);
 }
 
 long pollard_cycle(long n, int c)
@@ -352,6 +318,7 @@ int isqrt(double n)
  * 1, 1, 2, 5, 14, 42, 132, 429, etc
  */
 //** NOT TESTED
+typedef long long big;
 vector<big> cat;
 big catalan(int n)
 {
