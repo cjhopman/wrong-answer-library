@@ -142,22 +142,21 @@ bool in_triangle_2_open(pt p, pt a, pt b, pt c)
  *  - True if p is on edge or corner */
 bool in_triangle(pt p, pt a, pt b, pt c)
 {
-    int z1 = sign(det(p-a, b-a)),
-        z2 = sign(det(p-b, c-b)),
-        z3 = sign(det(p-c, a-c)) ;
-    int t = z1 ? z1 : z2 ? z2 : z3 ;
-    return
-        (!z1 || z1 == t) &&
-        (!z2 || z2 == t) &&
-        (!z3 || z3 == t)   ;
+	int n[3] = {0, 0, 0};
+	n[1 + sign(det(p - a, b - a))]++;
+	n[1 + sign(det(p - b, c - b))]++;
+	n[1 + sign(det(p - c, a - c))]++;
+    return !n[0] || !n[2];
 }
 
 /* True if p is in triangle abc
  *  - False if p is on edge or corner */
 bool in_triangle_open(pt p, pt a, pt b, pt c)
 {
-    int z1 = sign(det(p-a, b-a)),
-        z2 = sign(det(p-b, c-b)),
-        z3 = sign(det(p-c, a-c)) ;
-    return z2 && z1 == z2 && z2 == z3 ;
+	int n[3] = {0, 0, 0};
+	n[1 + sign(det(p - a, b - a))]++;
+	n[1 + sign(det(p - b, c - b))]++;
+	n[1 + sign(det(p - c, a - c))]++;
+    return n[0] == 3 || n[2] == 3;
 }
+
