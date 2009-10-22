@@ -1,4 +1,5 @@
 //Misc. number theory code goes here
+/*$*/
 // Stuff to add:
 //	Prime factorization
 //	Divisor function
@@ -8,6 +9,7 @@
 //	LCM
 //	Extended euclidean algorithm
 //	Pell's equation
+/*$*/
 
 #include <cmath>
 #include <map>
@@ -141,8 +143,8 @@ long mod_exp(long b, long e, int m)
 
 /*
  * A small, non-inclusive list of primes:
- * 3, 79, 83, 89, 97, 101, 499, 503, 991, 997, 1009, 2477, 2503, 4993, 4999, 5003,
- * 9973, 10007, 99991, 100003, 999983, 1000003, 1299827
+ * 3, 79, 83, 89, 97, 101, 499, 503, 991, 997, 1009, 2477, 2503, 4993, 4999,
+ * 5003, 9973, 10007, 99991, 100003, 999983, 1000003, 1299827
  */
 
 /*
@@ -331,7 +333,8 @@ long nt_sigma_k(long n, int k)
     int t = 1;
     map<long,long> f = trial_factor(n);
     for (map<long,long>::iterator i = f.begin(); i != f.end(); i++)
-        t *= (ipow(i->first, k * (i->second + 1) ) - 1) / (ipow(i->first, k) - 1);
+        t *= (ipow(i->first, k * (i->second + 1) ) - 1)
+			/ (ipow(i->first, k) - 1);
     return t;
 }
 

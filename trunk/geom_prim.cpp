@@ -46,7 +46,8 @@ double distPtLine(pt p, pt a, pt b)
     return abs(det(b-a, p-a)) / abs(b-a);
 }
 
-// Returns dist(p,a) if a == b. (change conditional to dot[ab] < 0 to return nan)
+// Returns dist(p,a) if a == b. 
+// (change conditional to dot[ab] < 0 to return nan)
 double distPtSeg(pt p, pt a, pt b)
 {
     double dota = dot(b-a, p-a);
@@ -155,7 +156,7 @@ bool xSegLine_simple(pt a, pt b, pt c, pt d)
 }
 
 /* Intersection of line a-b and line c-d
- *  -- Returns an "invalid" complex if a-b c-d parallel. (i.e. contains nan or inf)
+ *  -- Returns an "invalid" complex if a-b c-d parallel. 
  */
 pt xLineLine(pt a, pt b, pt c, pt d)
 {

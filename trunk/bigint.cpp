@@ -17,7 +17,8 @@ struct big {
 		return carry();
 	}
 	big& carry() {
-		for (int i = 1; i < N; i++) vals[i] += vals[i - 1] / 100000000, vals[i - 1] %= 100000000;
+		for (int i = 1; i < N; i++)
+			vals[i] += vals[i - 1] / 100000000, vals[i - 1] %= 100000000;
 		return *this;
 	}
 };

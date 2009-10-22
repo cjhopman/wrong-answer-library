@@ -32,7 +32,8 @@ double distPtLine(pt p, pt a, pt b)
     return (double)det(b-a, p-a) / dist(a, b);
 }
 
-// Returns dist(p,a) if a == b. (change conditional to dot[ab] < 0 to return nan)
+// Returns dist(p,a) if a == b. 
+// (change conditional to dot[ab] < 0 to return nan)
 double distPtSeg(pt p, pt a, pt b)
 {
     int dota = dot(b-a, p-a);

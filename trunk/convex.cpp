@@ -22,7 +22,8 @@ double ccw(pdd& a, pdd& b, pdd& c) {
 
 pdd ps;
 bool comp(pdd a, pdd b) {
-	return atan2(y(a) - y(ps), x(a) - x(ps)) < atan2(y(b) - y(ps), x(b) - x(ps));
+	return atan2(y(a) - y(ps), x(a) - x(ps))
+		< atan2(y(b) - y(ps), x(b) - x(ps));
 }
 
 polygon convex(polygon p) {
