@@ -1,3 +1,7 @@
+/* Convex hull
+ * TESTED integers: UVA 109
+ */
+
 #include <vector>
 #include <algorithm>
 #include <cmath>

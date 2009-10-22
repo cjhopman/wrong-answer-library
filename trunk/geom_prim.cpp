@@ -23,13 +23,13 @@ using namespace std;
 
 typedef complex<double> pt;
 
-/* 
+/*
  * det(a, b) is used everywhere. We implement it as a macro.
- * 
+ *
  * det(a, b) = | ax ay |
- *             | bx by |                                     
- *                                                           
- * det(a, b) is also the magnitude of the cross product of 
+ *             | bx by |
+ *
+ * det(a, b) is also the magnitude of the cross product of
  *                     (ax, ay, 0) and (bx, by, 0) .
  *                                                           */
 
