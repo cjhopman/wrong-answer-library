@@ -34,6 +34,26 @@ ldiv_t div_correct(long y, long x)
     return v;
 }
 
+/*$
+pii euclid(int a, int b) {
+	if (a % b == 0) return pii(0, 1);
+	pii t = euclid(b, a % b);
+	return pii(t.second, t.first - t.second * (a / b));
+}
+
+int gcd(int a, int b) {
+	pii e = euclid(abs(a), abs(b));
+	return a * e.first + b * e.second;
+}
+
+int extended_gcd(int a, int b) {
+	pii t = euclid(abs(a), abs(b));
+	t.first *= 1 + -2 * (a < 0);
+	t.second *= 1 + -2 * (b < 0);
+	return t;
+}
+$*/
+
 /* - At least one input must be non-zero.
  * - Output is always non-negative.
  * - Tested using Bipartite Numbers
@@ -166,7 +186,7 @@ map<long,long> trial_factor(long n)
     return f;
 }
 
-/* finds all primes up to n */
+/* finds all primes less than n */
 void sieve(int n, vector<int>& p) {
 	vector<bool> s(n, 1);
 	int i = 2;
