@@ -23,8 +23,9 @@ double dist(double x0, double y0, double x1, double y1)
 	{ return sqrt(dist2(x0, y0, x1, y1)); }
 
 
-void barycentric(double x0, double y0, double x1, double y1, double x2, double y2,
-		double px, double py, double& lambda1, double& lambda2, double& lambda3) {
+void barycentric(double x0, double y0, double x1, double y1, 
+		double x2, double y2, double px, double py, 
+		double& lambda1, double& lambda2, double& lambda3) {
 	double rx = px - x2, ry = py - y2;
 	double a = x0 - x2, b = x1 - x2, c = y0 - y2, d = y1 - y2;
 	double det = a * d - b * c;
@@ -33,17 +34,20 @@ void barycentric(double x0, double y0, double x1, double y1, double x2, double y
 	lambda3 = 1 - lambda1 - lambda2;
 }
 
-bool in_triangle(double x0, double y0, double x1, double y1, double x2, double y2,
-		double px, double py, double& l1, double& l2, double& l3) {
+bool in_triangle(double x0, double y0, double x1, double y1,
+		double x2, double y2, double px, double py,
+		double& l1, double& l2, double& l3) {
 	barycentric(x0, y0, x1, y1, x2, y2, px, py, l1, l2, l3);
 	return l1 > EPS && l2 > EPS && l3 > EPS;
 }
 
 //** NOT TESTED
-bool on_triangle(double x0, double y0, double x1, double y1, double x2, double y2,
-		double px, double py, double& l1, double& l2, double& l3) {
+bool on_triangle(double x0, double y0, double x1, double y1,
+		double x2, double y2, double px, double py,
+		double& l1, double& l2, double& l3) {
 	in_triangle(x0, y0, x1, y1, x2, y2, px, py, l1, l2, l3);
-	return (l1 > -EPS && l2 > -EPS && l3 > -EPS) && (l1 < EPS || l2 < EPS || l3 < EPS);
+	return (l1 > -EPS && l2 > -EPS && l3 > -EPS)
+		&& (l1 < EPS || l2 < EPS || l3 < EPS);
 }
 
 double polar(double x, double y) {
@@ -52,8 +56,8 @@ double polar(double x, double y) {
 }
 
 //** NOT TESTED
-double distance_to_line(double px, double py, double ax, double ay, double bx, double by,
-		double& cx, double& cy) {
+double distance_to_line(double px, double py, double ax, double ay,
+		double bx, double by, double& cx, double& cy) {
 	double sx0 = px - ax, sy0 = py - ay, sx1 = bx - ax, sy1 = by - ay;
 	double proj = (sx0 * sx1 + sy0 * sy1) / (sx1 * sx1 + sy1 * sy1);
 	cx = ax + proj * sx1;
@@ -61,8 +65,8 @@ double distance_to_line(double px, double py, double ax, double ay, double bx, d
 	return dist(px, py, cx, cy);
 }
 
-double distance_to_line_segment(double px, double py, double ax, double ay, double bx, double by,
-		double& cx, double& cy) {
+double distance_to_line_segment(double px, double py, double ax, double ay,
+		double bx, double by, double& cx, double& cy) {
 	double sx0 = px - ax, sy0 = py - ay, sx1 = bx - ax, sy1 = by - ay;
 	double proj = (sx0 * sx1 + sy0 * sy1) / (sx1 * sx1 + sy1 * sy1);
 	if (proj < 0) {
@@ -78,8 +82,8 @@ double distance_to_line_segment(double px, double py, double ax, double ay, doub
 
 
 // 0 - no intersection, 1 - point, 2 - line
-int line_intersection(double x1, double y1, double x2, double y2, double x3, double y3,
-		double x4, double y4, double& cx, double& cy) {
+int line_intersection(double x1, double y1, double x2, double y2,
+		double x3, double y3, double x4, double y4, double& cx, double& cy) {
 	double d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
 	double ua = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
 	double ub = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3);
@@ -97,13 +101,14 @@ int line_segment_intersection(double x1, double y1, double x2, double y2,
 	double ua = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
 	double ub = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3);
 	ua /= d; ub /= d;
-	if (ua < -EPS || ua > 1 + EPS || ub < EPS || ub > 1 + EPS || fabs(d) < EPS) return 0;
+	if (ua < -EPS || ua > 1 + EPS || ub < EPS || ub > 1 + EPS || fabs(d) < EPS)
+		return 0;
 	cx = x1 + ua * (x2 - x1), cy = y1 + ua * (y2 - y1);
 	return 1;
 }
 
-double circle_3_points(double x1, double y1, double x2, double y2, double x3, double y3,
-		double x4, double y4, double& cx, double& cy) {
+double circle_3_points(double x1, double y1, double x2, double y2,
+		double x3, double y3, double x4, double y4, double& cx, double& cy) {
 	if (x3 == x2 && x2 == x1) return -1;
 
 	if (x3 == x2) { swap(x1, x2); swap(y1, y2); }
@@ -113,7 +118,8 @@ double circle_3_points(double x1, double y1, double x2, double y2, double x3, do
 
 	if (mb == ma) return -1;
 
-	cx = (ma * mb * (y1 - y3) + mb * (x1 + x2) - ma * (x2 + x3)) / (2 * (mb - ma));
+	cx = (ma * mb * (y1 - y3) + mb * (x1 + x2)
+			- ma * (x2 + x3)) / (2 * (mb - ma));
 	cy = ma != 0 ? ((x1 + x2 - 2 * cx) / ma + y1 + y2) / 2
 			: ((x2 + x3 - 2 * cx) / mb + y2 + y3) / 2;
 	return dist(cx, cy, x1, y1);
@@ -121,8 +127,10 @@ double circle_3_points(double x1, double y1, double x2, double y2, double x3, do
 
 // takes latitude/longitude in degrees as normally specified
 double great_circle(double lat1, double lon1, double lat2, double lon2) {
-	lat1 *= M_PI / 180; lat2 *= M_PI / 180; lon1 *= M_PI / 180; lon2 *= M_PI / 180;
-	return acos(cos(lat1) * cos(lat2) * cos(lon1 - lon2) + sin(lat1) * (sin(lat2)));
+	lat1 *= M_PI / 180; lat2 *= M_PI / 180;
+	lon1 *= M_PI / 180; lon2 *= M_PI / 180;
+	return acos(cos(lat1) * cos(lat2) * cos(lon1 - lon2)
+			+ sin(lat1) * (sin(lat2)));
 }
 
 

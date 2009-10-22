@@ -20,7 +20,8 @@ int graph[N][N];
 int prev[N];
 
 typedef pair<int, int> edge;
-typedef pair<int, edge> q_pair; // <cost, <from, to> > --- default < compares cost first
+// <cost, <from, to> > --- default < compares cost first
+typedef pair<int, edge> q_pair;
 
 bool dijkstra(int& cost) {
 	int best[N];
@@ -69,7 +70,8 @@ int main() {
 			for (int i = 0; i < ns; i++) {
 				for (int j = 0; j < i; j++) {
 					int s = stops[i], t = stops[j];
-					graph[s][t] = graph[t][s] = min(graph[s][t] == 0 ? 1000000000 : graph[s][t], abs(s - t) * sp[e] + 60);
+					graph[s][t] = graph[t][s] = min(graph[s][t] == 0 ?
+							1000000000 : graph[s][t], abs(s - t) * sp[e] + 60);
 				}
 			}
 		}

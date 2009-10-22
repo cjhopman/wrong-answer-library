@@ -17,11 +17,11 @@ done
 
 cd print
 
-a2ps --pro=color -1 --tabsize=4 --portrait --margin=0 -M letterdj -o foo.ps *.cpp
+a2ps --pro=color --left-footer="" --right-footer="" --footer="" --header="" --right-title="" -1 --tabsize=4 --portrait --margin=0 -M letterdj -o foo.ps *.cpp
 psnup -nup 2 -pletter -m2 -b-16 foo.ps foo2.ps
 ps2pdf foo2.ps ../library.pdf
 
 cd ../
-# rm -r print
+rm -r print
 
 

@@ -31,7 +31,8 @@ bool bfs() {
 	while (!q.empty()) {
 		int c = q.front(); q.pop();
 		if (c == sink) return true;
-		for (node::iterator iter = graph[c].begin(); iter != graph[c].end(); iter++) {
+		for (node::iterator iter = graph[c].begin();
+				iter != graph[c].end(); iter++) {
 			int i = iter->first;
 			if (prev[i] >= 0 || graph[c][i] <= 0) continue;
 			prev[i] = c;
