@@ -56,6 +56,8 @@ int max_flow() {
 	return ret ;
 }
 
+
+/*$*/
 int main() {
 	int network_id = 1;
 	while (true) {
@@ -75,3 +77,4 @@ int main() {
 		printf("Network %d\nThe bandwidth is %d.\n\n", network_id++, max_flow());
 	}
 }
+/*$*/

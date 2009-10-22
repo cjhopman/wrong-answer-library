@@ -50,6 +50,7 @@ bool dijkstra(int& cost) {
 	return false;
 }
 
+/*$*/
 int main() {
 	int n;
 	while (cin >> n >> sink) {
@@ -81,4 +82,5 @@ int main() {
 	}
 	return 0;
 }
+/*$*/
 
