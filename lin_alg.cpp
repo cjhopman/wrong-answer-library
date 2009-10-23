@@ -87,12 +87,11 @@ field det(const mat& m)
 }
 
 
-
-
-
+/*$*/
 //Test code
 
 int main(int argc, char ** argv)
 {
     return 0;
 }
+/*$*/
