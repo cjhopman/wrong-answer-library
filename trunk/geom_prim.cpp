@@ -205,7 +205,6 @@ bool in_triangle_2_open(pt p, pt a, pt b, pt c)
         L[2] > EPS   ;
 }
 
-#include <iostream>
 
 /* True if p is in triangle abc
  *  - True if p is on edge or corner */
@@ -229,3 +228,28 @@ bool in_triangle_open(pt p, pt a, pt b, pt c)
     return n[0] == 3 || n[2] == 3;
 }
 
+double circle_3_points(double x1, double y1, double x2, double y2,
+		double x3, double y3, double x4, double y4, double& cx, double& cy) {
+	if (x3 == x2 && x2 == x1) return -1;
+
+	if (x3 == x2) { swap(x1, x2); swap(y1, y2); }
+	if (x1 == x2) { swap(x1, x3); swap(y1, y3); }
+
+	double ma = (y2 - y1) / (x2 - x1), mb = (y3 - y2) / (x3 - x2);
+
+	if (mb == ma) return -1;
+
+	cx = (ma * mb * (y1 - y3) + mb * (x1 + x2)
+			- ma * (x2 + x3)) / (2 * (mb - ma));
+	cy = ma != 0 ? ((x1 + x2 - 2 * cx) / ma + y1 + y2) / 2
+			: ((x2 + x3 - 2 * cx) / mb + y2 + y3) / 2;
+	return sqrt((cy - y1) * (cy - y1) + (cx - x1) * (cx - x1));
+}
+
+// takes latitude/longitude in degrees as normally specified
+double great_circle(double lat1, double lon1, double lat2, double lon2) {
+	lat1 *= M_PI / 180; lat2 *= M_PI / 180;
+	lon1 *= M_PI / 180; lon2 *= M_PI / 180;
+	return acos(cos(lat1) * cos(lat2) * cos(lon1 - lon2)
+			+ sin(lat1) * (sin(lat2)));
+}
