@@ -16,21 +16,10 @@ using namespace std;
 
 typedef complex<int> pt;
 
-int dist2(pt a, pt b) { return norm(b-a); }
-double dist(pt a, pt b) { return sqrt(norm(b-a)); }
-
 #define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
 
 #define sign(a) (a == 0 ? 0 : a > 0 ? 1 : -1)
-
-pt perpendicular(pt p) { return pt(-imag(p), real(p) ); }
-
-// Returns nan if a == b.
-double distPtLine(pt p, pt a, pt b)
-{
-    return (double)det(b-a, p-a) / dist(a, b);
-}
 
 // Returns dist(p,a) if a == b. 
 // (change conditional to dot[ab] < 0 to return nan)
@@ -70,39 +59,6 @@ bool xPtSeg_open(pt p, pt a, pt b)
         det(p-a, b-a) == 0 &&
         dot(p-a, b-a) >  0 && 
         dot(p-b, a-b) >  0   ;
-}
-
-/* True if segment a-b intersects segment c-d 
- *  -- True at endpoints. */
-bool xSegSeg(pt a, pt b, pt c, pt d) 
-{
-    int 
-        ta = det(c-a,d-a),
-        tb = det(d-b,c-b),
-        tc = det(a-c,b-c),
-        td = det(b-d,a-d) ;
-    return 
-        xPtSeg(a, c, d) ||
-        xPtSeg(b, d, c) ||
-        xPtSeg(c, a, b) ||
-        xPtSeg(d, b, a) ||
-        sign(ta) && sign(ta) == sign(tb) &&
-        sign(tc) && sign(tc) == sign(td) ;
-}
-
-/* True if segment a-b intersects segment c-d 
- *  -- False at endpoints.
- *  -- False if segments are parallel. */
-bool xSegSeg_open(pt a, pt b, pt c, pt d) 
-{
-    int
-        ta = det(c-a,d-a),
-        tb = det(d-b,c-b),
-        tc = det(a-c,b-c),
-        td = det(b-d,a-d) ;
-    return 
-        sign(ta) && sign(ta) == sign(tb) &&
-        sign(tc) && sign(tc) == sign(td) ;
 }
 
 /* True if segment a-b intersects segment c-d 
