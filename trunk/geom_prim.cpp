@@ -176,7 +176,7 @@ double circle_3_points(double x1, double y1, double x2, double y2,
 }
 
 // takes latitude/longitude in degrees as normally specified
-double great_circle_distance(double lat1, double lon1, double lat2, double lon2) {
+double great_circle_dist(double lat1, double lon1, double lat2, double lon2) {
 	lat1 *= M_PI / 180; lat2 *= M_PI / 180;
 	lon1 *= M_PI / 180; lon2 *= M_PI / 180;
 	return acos(cos(lat1) * cos(lat2) * cos(lon1 - lon2)
