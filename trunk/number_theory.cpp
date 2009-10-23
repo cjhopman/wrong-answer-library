@@ -36,7 +36,7 @@ ldiv_t div_correct(long y, long x)
 
 /*$
 pii euclid(int a, int b) {
-	if (a % b == 0) return pii(0, 1);
+	if (!b) return pii(0, 1);
 	pii t = euclid(b, a % b);
 	return pii(t.second, t.first - t.second * (a / b));
 }
