@@ -26,38 +26,31 @@ void reduce_cost() {
 				reduced_cost[i][j] += potential[i] - potential[j];
 }
 
-typedef pair<int, int> edge;
-typedef pair<int, edge> q_pair;
-#define to(x) ((x).second)
-#define from(x) ((x).first)
+typedef pair<int, int> pii;
 
 int dijkstra() {
 	reduce_cost();
 
-	int best[N];
-	fill(best, best + N, 2 * INF);
 	fill(potential, potential + N, 2 * INF);
 	fill(prev, prev + N, -1);
-	priority_queue<q_pair, vector<q_pair>, greater<q_pair> > pq;
+	priority_queue<pii, vector<pii>, greater<pii> > pq;
 
-	pq.push(q_pair(0, edge(source, source)));
+	pq.push(pii(0, source));
+	potential[source] = 0;
 
 	while (!pq.empty()) {
-		q_pair v = pq.top(); pq.pop();
+		pii v = pq.top(); pq.pop();
 		int c = v.first;
-		int pv = from(v.second), curr = to(v.second);
+		int curr = v.second;
 
-		if (prev[curr] >= 0) continue;
-		prev[curr] = pv;
-		potential[curr] = c;
-
-		if (c == sink) break;
+		if (potential[curr] < c) continue;
 
 		for (int next = 0; next < N; next++) {
-			if (graph[curr][next] <= 0 || prev[next] >= 0) continue;
-			if (best[next] < c + reduced_cost[curr][next]) continue;
-			best[next] = c + reduced_cost[curr][next];
-			pq.push(q_pair(best[next], edge(curr, next)));
+			if (graph[curr][next] <= 0) continue;
+			if (potential[next] <= c + reduced_cost[curr][next]) continue;
+			potential[next] = c + reduced_cost[curr][next];
+			prev[next] = curr;
+			pq.push(pii(potential[next],next));
 		}
 	}
 
