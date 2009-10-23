@@ -38,7 +38,10 @@ typedef complex<double> pt;
 
 #define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
 
-pt perpendicular(pt p) { return p * pt(0,1); }
+double dist2(pt a, pt b) { return norm(b-a); }
+double dist(pt a, pt b) { return abs(b-a); }
+
+pt perpendicular(pt p) { return pt(-imag(p), real(p) ); }
 
 // Returns nan if a == b.
 double distPtLine(pt p, pt a, pt b)
@@ -70,9 +73,9 @@ bool xPtSeg(pt p, pt a, pt b)
 {
     if ( abs(b-a) < EPS)            // check degenerate case a == b
         return abs(p-a) < EPS;
-    return 
+    return
         abs(det(p-a, b-a)) < EPS &&
-        dot(p-a, b-a) > -EPS && 
+        dot(p-a, b-a) > -EPS &&
         dot(p-b, a-b) > -EPS ;
 }
 
@@ -106,7 +109,7 @@ bool xSegSeg(pt a, pt b, pt c, pt d)
 
 /* True if segment a-b intersects segment c-d 
  *  -- False at endpoints.
- *  -- False if segments are colinear. */
+ *  -- False if segments are parallel. */
 bool xSegSeg_open(pt a, pt b, pt c, pt d) 
 {
     double 
