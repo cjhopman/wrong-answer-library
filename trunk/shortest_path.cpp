@@ -13,44 +13,39 @@
 
 using namespace std;
 
-
 const int N = 101;
 int source, sink;
 int graph[N][N];
 int prev[N];
 
-typedef pair<int, int> edge;
-// <cost, <from, to> > --- default < compares cost first
-typedef pair<int, edge> q_pair;
+typedef pair<int, int> pii;
 
 bool dijkstra(int& cost) {
-	int best[N];
-
+	int dist[N];
+	fill(dist, dist + N, 1000000000);
 	fill(prev, prev + N, -1);
-	fill(best, best + N, 1000000000);
 
-	priority_queue<q_pair, vector<q_pair>, greater<q_pair> > pq;
-	pq.push(q_pair(0, edge(source, source)));
-	best[0] = 0;
+	priority_queue<pii, vector<pii>, greater<pii> > pq;
+	pq.push(pii(0, source));
+	dist[source] = 0;
+	prev[source] = source;
 
 	while (!pq.empty()) {
-		q_pair curr = pq.top(); pq.pop();
-		int c = curr.second.second;
+		pii curr = pq.top(); pq.pop();
+		int c = curr.second;
 
-		if (best[c] <= curr.first) continue;
-		prev[c] = curr.second.first;
+		if (dist[c] < curr.first) continue;
 		if (c == sink) { cost += curr.first; return true; }
 
 		for (int n = 0; n < N; n++) {
-			if (graph[c][n] > 100000000) continue;
-			if (best[n] <= curr.first + graph[c][n]) continue;
-			best[n] = curr.first + graph[c][n];
-			pq.push(q_pair(best[n], edge(c, n)));
+			if (dist[n] <= curr.first + graph[c][n]) continue;
+			dist[n] = curr.first + graph[c][n];
+			prev[n] = c;
+			pq.push(pii(dist[n], n));
 		}
 	}
 	return false;
 }
-
 /*$*/
 int main() {
 	int n;
