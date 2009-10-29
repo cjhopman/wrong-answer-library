@@ -1,34 +1,29 @@
-/* generate combinations
- * usage: generates combinations and permutations lexicographically
+/* usage: generates combinations and permutations lexicographically
  * generates over range [0, n-1]
- *
- * generates kth lexicographic permutation (perm(n, n)).
- */
-
+ * generates kth lexicographic permutation (perm(n, n)). */
 #include <iostream>
-
 using namespace std;
 
 void generate_combos(int n, int k) {
 	int com[100];
 	for (int i = 0; i < k; i++) com[i] = i;
 	while (com[k - 1] < n) {
-
 		for (int i = 0; i < k; i++)
 			cout << com[i] << " ";
 		cout << endl;
 
 		int t = k - 1;
 		while (t != 0 && com[t] == n - k + t) t--;
+		com[t]++;
 		for (int i = t + 1; i < k; i++) com[i] = com[i - 1] + 1;
 	}
 }
 
 // use for large n or small k, O(n! / (n - k)!)
 void generate_permutations(int n, int k) {
-	int perm[100];
+	int perm[100], j = k;
 	for (int i = 0; i < n; i++) perm[i] = i;
-	int j = k;
+
 	while (true) {
 		for (int i = 0; i < k; i++)
 			cout << perm[i] << " ";
@@ -63,15 +58,13 @@ void kth_permutation(int n, int k) {
 		cout << perm[i] << " ";
 	cout << endl;
 }
-
-
+/*$*/
 int main(int argc, char ** argv)
 {
 	//generate_permutations(30, 3);
-	//generate_combos(50, 3);
+	generate_combos(50, 3);
 	//for (int i = 0; i < 6; i++)
 	//	kth_permutation(3, i);
     return 0;
 }
-
-
+/*$*/
