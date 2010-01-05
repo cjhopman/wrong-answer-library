@@ -1,6 +1,8 @@
-/* Convex hull
- * TESTED integers: UVA 109
- */
+/* Convex hull TESTED */
+
+/*$
+ * TESTED UVA 109 (with integers)
+$*/
 
 #include <vector>
 #include <algorithm>
