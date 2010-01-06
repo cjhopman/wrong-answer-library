@@ -1,0 +1,28 @@
+bigint: string constructor; istream; need test
+binary_index_tree: need test; maybe delete; change underscore to dashes
+combos_perms: gray code; need test; 
+convex: need test; need floating point test
+geom_poly: need test; need floating point test; complete inside_polygon, etc
+geom_prim: need test; improve circle_3_points, great_circle; add spherical
+geom_intersect: split from ...; add xsegpoly, xlinepoly
+lattice_poly: delete area2; need testing
+lcs: need testing
+linalg: delete
+lis: 
+kruskal: need testing
+number_theory: need test; delete nt_sigma, isqrt
+number_theory: add continued fractions, partition numbers + enum, pell
+polynomials: delete
+triangle: need test; delete triangle_2_*
+
+add:
+strongly-connected-component
+2sat
+decartes' theorem
+prim
+polynomial interpolation
+permutations
+quicksort
+kmp
+suffix tree
+lp
