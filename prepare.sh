@@ -1,3 +1,5 @@
+#!/bin/sh
+
 mkdir print > /dev/null 2>&1
 rm print/* > /dev/null 2>&1
 
