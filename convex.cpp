@@ -38,6 +38,7 @@ bool comp_lex(pt a, pt b)
  *  - Correct with collinear points
  *  - P.size >= 2
  */
+#include <iostream>
 polygon convex_hull(polygon P)    // pass by value
 {
     swap(P[0], *min_element(P.begin(), P.end(), comp_lex));
@@ -59,76 +60,27 @@ polygon convex_hull(polygon P)    // pass by value
 
 #include <cstdio>
 #include <iostream>
-int N, M;
-
-double calc_perim(const polygon &P)
-{
-    double S = 0.0;
-    for (int i = 0; i < P.size(); i++)
-        S += abs(P[i] - P[(i+1) % P.size()]);
-    return S + 2 * M_PI * M;
-}
-
-polygon Z;
-double D[1 << 9];
-
-double calc_cost(int X)
-{
-    polygon P;
-    for (int k = 0; k < N; k++)
-        if (X & (1 << k))
-            P.push_back(Z[k]);
-
-    if (P.size() != 1)
-        P = convex_hull(P);
-    double d = calc_perim(P);
-
-    int m[9];
-    int j = 0;
-    for (int k = 0; k < N; k++)
-        if (X & 1 << k)
-            m[j++] = k;
-
-    for (int i = 1; i < (1 << __builtin_popcount(X)) - 1; i++)
-    {
-        int X2 = 0;
-        for (int k = 0; k < j; k++)
-            if (i & 1 << k)
-                X2 |= 1 << m[k];
-
-        int X3 = X - X2;
-        d = min(d, D[X2] + D[X3]);
-    }
-    return d;
-}
-
-void do_dp()
-{
-    for (int i = 1; i < 1 << N; i++)
-        D[i] = calc_cost(i);
-}
-
-int main(int argc, char **argv)
+int N;
+int main1(int argc, char **argv)
 {
     for (int caseno = 1; ; caseno++)
     {
-        Z.clear();
-        cin >> N >> M;
+        polygon Z;
+        cin >> N;
         if (N == 0)
             break;
-
         for (int i = 0; i < N; i++)
         {
-            int xi, yi;
+            double xi, yi;
             cin >> xi >> yi;
             Z.push_back(pt(xi, yi));
         }
-
-        do_dp();
-
-        printf("Case %d: ", caseno);
-        printf("length = %.2f\n", D[(1 << N) - 1]);
+        polygon Z2 = convex_hull(Z);
+        for (int i = 0; i < Z2.size(); i++)
+            cout << Z2[i];
+        cout << endl;
     }
     return 0;
 }
+
 /*$*/
