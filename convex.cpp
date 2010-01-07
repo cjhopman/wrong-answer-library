@@ -1,5 +1,6 @@
 /*$
  * TESTED UVA 109 (with integers)
+ * TESTED ICPC WORLD 2009 Deer-proof Fence
  $*/
 
 #include <vector>
@@ -34,12 +35,11 @@ bool comp_lex(pt a, pt b)
 }
 
 /* Graham scan 
+ *  - Correct with collinear points
+ *  - P.size >= 2
  */
 polygon convex_hull(polygon P)    // pass by value
 {
-    if (P.size() <= 1)
-        return P;
-
     swap(P[0], *min_element(P.begin(), P.end(), comp_lex));
     pv = P[0];
     sort(P.begin(), P.end(), comp_pivot);
@@ -79,7 +79,9 @@ double calc_cost(int X)
         if (X & (1 << k))
             P.push_back(Z[k]);
 
-    double d = calc_perim(convex_hull(P));
+    if (P.size() != 1)
+        P = convex_hull(P);
+    double d = calc_perim(P);
 
     int m[9];
     int j = 0;
