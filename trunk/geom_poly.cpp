@@ -6,52 +6,51 @@
  */
 
 #include <vector>
-#include <algorithm>
+#include <complex>
 
-#define x(a) ((a).first)
-#define y(a) ((a).second)
-#define det(a, b) (x(a) * y(b) - x(b) * y(a))
-#define ccw(a, b, c) det(a - b, c - b)
+using namespace std;
 
-typedef pair<double, double> pt;
+#define EPS 1e-9
+typedef complex<double> pt;
 typedef vector<pt> polygon;
 
-/* Returns 2 * (area of polygon V), a0 must == an
- * TESTED integers: UVA 109
- */
+#define det(a, b) imag(conj(a)*(b))
 
+/* Returns 2 * (area of polygon V)
+ *  - Assumes V[0] == V[-1]
+ */
 double area_polygon(polygon &V)
 {
     double A = 0.0;
-    for (int i = 1; i < V.size(); i++)
+    for (unsigned i = 1; i < V.size(); i++)
         A += det(V[i - 1], V[i]);
     return abs(A);
 }
 
-/* vertices should be in counterclockwise order, with a0 == an
- * TESTED integers: UVA 109
+/*  - Assumes convex V in ccw order
+ *  - Assumes V[0] == V[-1]
  */
-
 bool inside_convex(pt p, polygon& V)
 {
-	for (unsigned i = 1; i < V.size(); i++)
-        if (ccw(V[i - 1], V[i], p) < 0)
+    for (unsigned i = 1; i < V.size(); i++)
+        if (det(V[i] - V[i - 1], p - V[i - 1]) < -EPS)
             return false;
-	return true;
+    return true;
 }
 
-/* True if segment a-b crosses V
- *   - True at edge and corner cases */
-//** NOT TESTED
-bool xSegPoly(pt a, pt b, polygon V)
+/*
+ * Tests whether p is in simple polygon V
+ *  - Assumes V[0] == V[-1]
+ *  - Assumes p does not intersect V
+ *  - Assumes segment p-q does not intersect corners
+ *  - Assumes q is large enough
+ */
+bool inside_polygon(pt p, polygon& V)
 {
-    return 0;
+    pt q = polar(1e8, 1.2345);
+    int s = 0;
+    for (int i = 1; i < V.size(); i++)
+        s += xSegSeg(p, q, V[i - 1], V[i]);
+    return s % 2 == 1;
 }
 
-/* True if line a-b crosses V
- *   - True at edge and corner cases */
-//** NOT TESTED
-bool xLinePoly(pt a, pt b, polygon V)
-{
-    return 0;
-}
