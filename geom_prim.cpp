@@ -7,19 +7,14 @@
 
 using namespace std;
 
-#define EPS 1e-10
-
+#define EPS 1e-9
 typedef complex<double> pt;
 
 #define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
-
 #define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
 
-double dist2(pt a, pt b) { return norm(b-a); }
-double dist(pt a, pt b) { return abs(b-a); }
-
-pt perpendicular(pt p) { return pt(-imag(p), real(p) ); }
+pt perpendicular(pt p) { return p * polar(1.0, 0.5 * M_PI); }
 
 // Returns nan if a == b.
 double distPtLine(pt p, pt a, pt b)
@@ -46,25 +41,14 @@ bool isParallel(pt a, pt b, pt c, pt d)
 { return abs(det(a-b, c-d)) < EPS; }
 
 /* True if p is on segment a-b.
+ *  - Assume a != b
  *  - True at endpoints      */
 bool xPtSeg(pt p, pt a, pt b)
 {
-    if ( abs(b-a) < EPS)            // check degenerate case a == b
-        return abs(p-a) < EPS;
     return
         abs(det(p-a, b-a)) < EPS &&
         dot(p-a, b-a) > -EPS &&
         dot(p-b, a-b) > -EPS ;
-}
-
-/* True if p is on segment a-b.
- *  - False at endpoints      */
-bool xPtSeg_open(pt p, pt a, pt b)
-{
-    return 
-        abs(det(p-a, b-a)) < EPS &&
-        dot(p-a, b-a) > EPS && 
-        dot(p-b, a-b) > EPS ;
 }
 
 /* True if segment a-b intersects segment c-d 
@@ -72,10 +56,10 @@ bool xPtSeg_open(pt p, pt a, pt b)
 bool xSegSeg(pt a, pt b, pt c, pt d) 
 {
     double
-        ta = det(c-a,d-a),
-        tb = det(d-b,c-b),
-        tc = det(a-c,b-c),
-        td = det(b-d,a-d) ;
+        ta = det(c-a, d-a),
+        tb = det(d-b, c-b),
+        tc = det(a-c, b-c),
+        td = det(b-d, a-d) ;
     return 
         xPtSeg(a, c, d) ||
         xPtSeg(b, d, c) ||
@@ -91,10 +75,10 @@ bool xSegSeg(pt a, pt b, pt c, pt d)
 bool xSegSeg_open(pt a, pt b, pt c, pt d) 
 {
     double 
-        ta = det(c-a,d-a),
-        tb = det(d-b,c-b),
-        tc = det(a-c,b-c),
-        td = det(b-d,a-d) ;
+        ta = det(c-a, d-a),
+        tb = det(d-b, c-b),
+        tc = det(a-c, b-c),
+        td = det(b-d, a-d) ;
     return 
         sign(ta) && sign(ta) == sign(tb) &&
         sign(tc) && sign(tc) == sign(td) ;
@@ -105,8 +89,8 @@ bool xSegSeg_open(pt a, pt b, pt c, pt d)
 bool xSegSeg_simple(pt a, pt b, pt c, pt d) 
 {
     return 
-        det(c-a,d-a) > EPS == det(d-b,c-b) > EPS &&
-        det(a-c,b-c) > EPS == det(b-d,a-d) > EPS ;
+        det(c-a, d-a) > EPS == det(d-b, c-b) > EPS &&
+        det(a-c, b-c) > EPS == det(b-d, a-d) > EPS ;
 }
 
 /* True if segment a-b intersects segment c-d 
@@ -157,22 +141,17 @@ void perp_bisector(pt a, pt b, pt &m, pt &d)
     d = (b - a) * pt(0, 1);
 }
 
-double circle_3_points(double x1, double y1, double x2, double y2,
-		double x3, double y3, double x4, double y4, double& cx, double& cy) {
-	if (x3 == x2 && x2 == x1) return -1;
-
-	if (x3 == x2) { swap(x1, x2); swap(y1, y2); }
-	if (x1 == x2) { swap(x1, x3); swap(y1, y3); }
-
-	double ma = (y2 - y1) / (x2 - x1), mb = (y3 - y2) / (x3 - x2);
-
-	if (mb == ma) return -1;
-
-	cx = (ma * mb * (y1 - y3) + mb * (x1 + x2)
-			- ma * (x2 + x3)) / (2 * (mb - ma));
-	cy = ma != 0 ? ((x1 + x2 - 2 * cx) / ma + y1 + y2) / 2
-			: ((x2 + x3 - 2 * cx) / mb + y2 + y3) / 2;
-	return sqrt((cy - y1) * (cy - y1) + (cx - x1) * (cx - x1));
+/*
+ * Returns the center of circle touching three points
+ *   - Assumes {a, b, c} distinct
+ * NOT TESTED
+ */
+double circle_3_points(pt a, pt b, pt c)
+{
+    pt m1, d1, m2, d2;
+    perp_bisector(a, b, m1, d1);
+    perp_bisector(a, c, m2, d2);
+    return xLineLine(m1, m1 + d1, m2, m2 + d2);
 }
 
 // takes latitude/longitude in degrees as normally specified
