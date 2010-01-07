@@ -1,4 +1,5 @@
 #include <vector>
+#include <stack>
 #include <algorithm>
 
 using namespace std;
@@ -6,20 +7,18 @@ using namespace std;
 class node
 {
     public:
-    node() : ix(-1), comp(-1), next(this) {}
+    node() : ix(-1), comp(-1), in_stack(0) {}
     vector<node *> edges;
-    int ix;            // index; -1 represents undefined
+    int ix;            // index in dfs; -1 represents undefined
     int lowlink;
-    node *next;        // elem below in stack (v->next == v denotes not in stack)
-    int comp;          // component this node belongs to
+    int in_stack;      // whether in dfs stack
+    int comp;          // output: component to which this node belongs
 };
 
-
-vector<node *> G;        // input: directed graph
-int ix = 0;              // dfs visit index counter
-int comp_ix = 0;         // component counter
-node *top;               // top of dfs visit stack
-vector<node *> roots;    // output: root of each component
+vector<node *> G;        // input: directed graph as vector of nodes
+int ix;                  // dfs visit index counter
+int comp_ix;             // component counter
+stack<node *> S;         // dfs stack
 
 /*
  * Tarjan's algorithm for SCC
@@ -28,40 +27,42 @@ vector<node *> roots;    // output: root of each component
 void tarjan_iter(node *v)
 {
     v->ix = v->lowlink = ix++;
-    v->next = top; top = v;           // push
+    S.push(v);
+    v->in_stack = 1;
 
     for (int i = 0; i < v->edges.size(); i++)
     {
         node *z = v->edges[i];
         if (z->ix == -1)
         {
-            tarjan_iter(v);
+            tarjan_iter(z);
             v->lowlink = min(v->lowlink, z->lowlink);
         }
-        else if (z->next != z)                    // not in stack
-            v->lowlink = min(v->lowlink, z->lowlink);
+        else if (z->in_stack)
+            v->lowlink = min(v->lowlink, z->ix);
     }
 
     if (v->lowlink == v->ix)
     {
+        node *z;
         do
         {
-            top->comp = comp_ix;
-            swap(top, top->next);                 // pop
-        } while (top != v) ;
-        roots.push_back(v);
+            z = S.top(); S.pop();
+            z->in_stack = 0;
+            // z belongs to component comp_ix
+        } while (z != v) ;
+
         comp_ix += 1;
     }
 }
 
 void tarjan(void)
 {
+    ix = 0;
+    comp_ix = 0;
+    S = stack<node *>();
+
     for (int i = 0; i < G.size(); i++)
         if (G[i]->ix == -1)
             tarjan_iter(G[i]);
-}
-
-int main()
-{
-    return 0;
 }
