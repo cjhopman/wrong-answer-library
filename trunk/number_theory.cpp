@@ -276,7 +276,7 @@ long nt_mu(long n)
     if (n == 1) return 1;
     map<long,long> f = trial_factor(n);
     for (map<long,long>::iterator i = f.begin(); i != f.end(); i++)
-        if (i->second == 2)
+        if (i->second >= 2)
             return 0;
 
     return f.size() % 2 == 0 ? 1 : -1;
