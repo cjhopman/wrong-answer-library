@@ -38,7 +38,6 @@ bool comp_lex(pt a, pt b)
  *  - Correct with collinear points
  *  - P.size >= 2
  */
-#include <iostream>
 polygon convex_hull(polygon P)    // pass by value
 {
     swap(P[0], *min_element(P.begin(), P.end(), comp_lex));
