@@ -161,3 +161,33 @@ double great_circle_dist(double lat1, double lon1, double lat2, double lon2) {
 	return acos(cos(lat1) * cos(lat2) * cos(lon1 - lon2)
 			+ sin(lat1) * (sin(lat2)));
 }
+
+/* 
+ * Returns great circle distance of two points on unit sphere
+ *  - Points are (inclination, azimuth) coords in radians
+ *  - Unstable at antipodal points
+ */
+double great_circle_dist(double th1, double phi1, double th2, double phi2)
+{
+#define haversine(x) pow(sin((x) / 2), 2.0)
+    double z = haversine(th1 - th2) + sin(th1) * sin(th2) * haversine(phi1 - phi2);
+    return 2 * acos(sqrt(z));
+}
+
+/*
+spherical coordinate system:
+(r = radius, th = inclination, phi = azimuth)
+ - azimuth is right-hand from x-axis
+ - elevation = pi/2 - inclination
+ - 0 <= th <= pi
+ - 0 <= phi < 2 * pi
+
+r^2 = x^2 + y^2 + z^2
+th = acos(z / r)
+phi = atan2(y, x)
+
+geographic coordinate system (spherical approximation):
+(latitude, longitude)
+latitude = elevation from celestial equator
+longitude = right-hand azimuth from greenwich
+*/
