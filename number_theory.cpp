@@ -1,15 +1,6 @@
-//Misc. number theory code goes here
-/*$*/
-// Stuff to add:
-//	Prime factorization
-//	Divisor function
-//	Totient
-//	Seive
-//	GCD
-//	LCM
-//	Extended euclidean algorithm
-//	Pell's equation
-/*$*/
+/*$
+number theory 
+$*/
 
 #include <cmath>
 #include <map>
@@ -66,6 +57,7 @@ long gcd(long a, long b)
 }
 
 long lcm(long a, long b) { return a / gcd(a, b) * b; }
+
 /* - At least one input must be non-zero.
  * - Output: return.first should be the closest to 0, and may be negative.
  * - Tested using Bipartite Numbers
@@ -212,7 +204,7 @@ long pollard_cycle(long n, int c)
 }
 
 /* Pollard's rho method
- *  - breaks if n == 0           */
+ *  - assert n > 0           */
 map<long,long> pollard_factor(long n)
 {
     map<long,long> fact;
@@ -278,7 +270,7 @@ long nt_phi(long n)
 }
 
 //** NOT TESTED
-/* Mobieus function */
+/* Mobius function */
 long nt_mu(long n)
 {
     if (n == 1) return 1;
@@ -302,17 +294,6 @@ long nt_d(long n)
 }
 
 //** NOT TESTED
-/* Sum of divisors function */
-long nt_sigma(long n)
-{
-    int t = 1;
-    map<long,long> f = trial_factor(n);
-    for (map<long,long>::iterator i = f.begin(); i != f.end(); i++)
-        t *= (ipow(i->first, i->second + 1) - 1) / (i->first - 1);
-    return t;
-}
-
-//** NOT TESTED
 /* Generalized sum of divisors function */
 long nt_sigma_k(long n, int k)
 {
@@ -322,16 +303,6 @@ long nt_sigma_k(long n, int k)
         t *= (ipow(i->first, k * (i->second + 1) ) - 1)
 			/ (ipow(i->first, k) - 1);
     return t;
-}
-
-// integer square root
-//** NOT TESTED
-int isqrt(double n)
-{
-    double s, t = 0;
-    for (s = n; abs(t-s) > 0.5; s = t)
-        t = 0.5 * (s + n / s);
-    return floor(s);
 }
 
 /* Catalan numbers
