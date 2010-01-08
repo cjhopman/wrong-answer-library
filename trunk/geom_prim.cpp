@@ -12,9 +12,13 @@ typedef complex<double> pt;
 
 #define det(a, b) imag(conj(a)*(b))   // cf right-hand rule, cross-prod, 3x3 det
 #define dot(a, b) real(conj(a)*(b))
-#define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
 
 pt perpendicular(pt p) { return p * polar(1.0, 0.5 * M_PI); }
+
+/* True if a-b c-d parallel.
+ *  - True if a == b or c == d    */
+bool isParallel(pt a, pt b, pt c, pt d)
+{ return abs(det(a-b, c-d)) < EPS; }
 
 // Returns nan if a == b.
 double distPtLine(pt p, pt a, pt b)
@@ -34,11 +38,6 @@ double distPtSeg(pt p, pt a, pt b)
         return abs(p-b);
     return abs(det(b-a, p-a)) / abs(b-a);
 }
-
-/* True if a-b c-d parallel.
- *  - True if a == b or c == d    */
-bool isParallel(pt a, pt b, pt c, pt d)
-{ return abs(det(a-b, c-d)) < EPS; }
 
 /* Returns the perpendicular bisector of segment a-b
  *  - The segment with endpoints m and m+d will be a perpendicular bisector.

@@ -6,8 +6,9 @@ using namespace std;
 #define EPS 1e-9
 typedef complex<double> pt;
 
-#define det(a, b) imag(conj(a)*(b))   // cf right-hand rule, cross-prod, 3x3 det
+#define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
+
 #define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
 
 /* True if p is on segment a-b.
