@@ -146,7 +146,7 @@ void perp_bisector(pt a, pt b, pt &m, pt &d)
  *   - Assumes {a, b, c} distinct
  * NOT TESTED
  */
-double circle_3_points(pt a, pt b, pt c)
+pt circle_3_points(pt a, pt b, pt c)
 {
     pt m1, d1, m2, d2;
     perp_bisector(a, b, m1, d1);
