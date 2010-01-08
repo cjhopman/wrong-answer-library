@@ -62,14 +62,6 @@ pt circle_3_points(pt a, pt b, pt c)
     return xLineLine(m1, m1 + d1, m2, m2 + d2);
 }
 
-// takes latitude/longitude in degrees as normally specified
-double great_circle_dist(double lat1, double lon1, double lat2, double lon2) {
-	lat1 *= M_PI / 180; lat2 *= M_PI / 180;
-	lon1 *= M_PI / 180; lon2 *= M_PI / 180;
-	return acos(cos(lat1) * cos(lat2) * cos(lon1 - lon2)
-			+ sin(lat1) * (sin(lat2)));
-}
-
 /* 
  * Returns great circle distance of two points on unit sphere
  *  - Points are (azimuth, inclination) coords in radians
