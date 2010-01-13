@@ -167,7 +167,7 @@ long mod_exp(long b, long e, int m)
 map<long,long> trial_factor(long n)
 {
     map<long,long> f;
-    for (long i = 2; i <= sqrt(n); i++)
+    for (long i = 2; i * i <= n; i++)
         while (n % i == 0)
         {
             n /= i;
