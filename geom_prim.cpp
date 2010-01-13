@@ -91,3 +91,9 @@ geographic coordinate system (spherical approximation):
 latitude = elevation from celestial equator
 longitude = right-hand azimuth from greenwich
 */
+
+/*
+ * Descartes' Theorem:
+ * Given four mutually tangent circles with curvatures k1, k2, k3, k4, 
+ * (k1 + k2 + k3 + k4) ^ 2 = 2 * (k1 ^ 2 + k2 ^ 2 + k3 ^ 2 + k4 ^ 2)
+ */
