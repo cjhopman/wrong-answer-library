@@ -6,6 +6,7 @@ using namespace std;
 #define EPS 1e-9
 typedef complex<double> pt;
 typedef pair<pt, double> circle;
+typedef pair<pt, pt> line;
 
 #define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
