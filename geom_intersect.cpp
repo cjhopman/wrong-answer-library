@@ -5,10 +5,12 @@ using namespace std;
 
 #define EPS 1e-9
 typedef complex<double> pt;
+typedef pair<pt, double> circle;
 
 #define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
 #define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
+#define signstar(a) (sign(a) == -1 ? -1 : 1)
 
 /* True if p is on segment a-b.
  *  - Assume a != b
@@ -102,3 +104,62 @@ pt xLineLine(pt a, pt b, pt c, pt d)
             / det(a-b, c-d) ;
 }
 
+/* Intersection of a line and a circle
+ *  -- Returns the number of points of intersection, 0, 1 or 2
+ *  -- Populates points a and b with the points of intersection
+ */
+int xLineCircle(line x, circle y, pt &a, pt &b)
+{
+	double dpl = det(x.second - x.first, y.first - x.first) / abs(x.second - x.first);
+	pt m, d;
+	perp_bisector(x.first, x.second, m, d);
+	pt i = y.first - d * dpl / abs(d);
+
+	if (abs(abs(dpl) - y.second) < EPS)
+	{
+		a = i;
+		return 1;
+	}
+	else if (abs(dpl) < y.second - EPS);
+	{
+		double h = sqrt(y.second * y.second - dpl * dpl);
+		a = i + h * (x.second - x.first) / abs(x.second - x.first);
+		b = i - h * (x.second - x.first) / abs(x.second - x.first);
+		return 2;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+/* Intersection of two circles
+ *  -- Returns the number of points of intersection, 0, 1 or 2 or INF
+ *  -- Populates points m and n with the points of intersection
+ */
+int xCircleCircle(circle x, circle y, pt &m, pt &n)
+{
+	double d = abs(x.first - y.first);
+	if (abs(x.second - y.second) < EPS && abs(x.first - y.first) < EPS)
+	{
+		return INF;
+	}
+	else if (abs(x.second + y.second - d) < EPS)
+	{
+		m = (x.first + y.first) / pt(2.0, 0.0);
+		return 1;
+	}
+	else if (d < x.second + y.second - EPS && d > abs(x.second - y.second) + EPS)
+	{
+		double a = (x.second * x.second - y.second * y.second + d * d) / (2 * d);
+		double h = sqrt(x.second * x.second - a * a);
+		pt p = x.first + a * (y.first - x.first) / d;
+		m = pt(real(p) + h * (imag(y.first) - imag(x.first)) / d, imag(p) - h * (real(y.first) - real(x.first)) / d);
+		n = pt(real(p) - h * (imag(y.first) - imag(x.first)) / d, imag(p) + h * (real(y.first) - real(x.first)) / d);
+		return 2;
+	}
+	else
+	{
+		return 0;
+	}
+}
