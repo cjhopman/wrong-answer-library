@@ -10,9 +10,38 @@
 
 using namespace std;
 
-#define EPS 1e-9
+#define EPS 1E-9
+#define det(a, b) imag(conj(a)*(b))
+#define dot(a, b) real(conj(a)*(b))
+#define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
+#define signstar(a) (sign(a) == -1 ? -1 : 1)
+
 typedef complex<double> pt;
+typedef pair<pt, pt> line;
 typedef vector<pt> polygon;
+typedef line seg;
+
+/*
+ * Assume V[0] == V[-1] 
+ */
+double signed_area(polygon &V)
+{
+	double A = 0.0;
+	for (unsigned i = 1; i < V.size(); i++)
+		A += det(V[i - 1], V[i]);
+	return A / 2;
+}
+
+/*
+ * Assume V[0] == V[-1] 
+ */
+pt centroid(polygon &V)
+{
+	pt c = pt(0.0, 0.0);
+	for (unsigned i = 1; i < V.size(); i++)
+		c += (V[i - 1] + V[i]) * pt(det(V[i - 1], V[i]), 0.0);
+	return c / pt(6 * signed_area(V), 0.0);
+}
 
 #define det(a, b) imag(conj(a)*(b))
 
@@ -54,3 +83,10 @@ bool inside_polygon(pt p, polygon& V)
     return s % 2 == 1;
 }
 
+
+/*$*/
+int main()
+{
+	return 0;
+}
+/*$*/
