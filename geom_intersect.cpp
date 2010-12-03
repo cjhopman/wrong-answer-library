@@ -1,17 +1,155 @@
 #include <cmath>
 #include <complex>
+#include <vector>
+#include <map>
 
 using namespace std;
 
 #define EPS 1e-9
+#define INF 1000000000
+
 typedef complex<double> pt;
 typedef pair<pt, double> circle;
 typedef pair<pt, pt> line;
+typedef vector<pt> polygon;
+typedef line seg;
 
 #define det(a, b) imag(conj(a)*(b))
 #define dot(a, b) real(conj(a)*(b))
 #define sign(a) (abs(a) < EPS ? 0 : a > 0 ? 1 : -1)
 #define signstar(a) (sign(a) == -1 ? -1 : 1)
+
+pt xLineLine(line a, line b)
+{
+	return
+		( det(a.first, a.second) * (b.first - b.second) - det(b.first, b.second) * (a.first - a.second) ) / det(a.first - a.second, b.first - b.second) ;
+}
+
+bool xPtSeg(pt p, seg l)
+{
+	return abs(abs(p - l.first) + abs(p - l.second) - abs(l.first - l.second)) < EPS;
+}
+
+bool xPtSeg_open(pt p, seg l)
+{
+	return
+		abs(p - l.first) > EPS && 
+		abs(p - l.second) > EPS && 
+		xPtSeg(p, l);
+}
+
+bool parallel(line a, line b)
+{
+	return abs(det(a.first - a.second, b.first - b.second)) < EPS;
+}
+
+bool xLineSeg(line a, seg b, pt &x)
+{
+	x = xLineLine(a, b);
+	return !parallel(a, b) && xPtSeg(x, b);
+}
+
+bool xLineSeg_open(line a, seg b, pt &x)
+{
+	x = xLineLine(a, b);
+	return !parallel(a, b) && xPtSeg_open(x, b);
+}
+
+bool xPtLine(pt p, line l)
+{
+	double
+		da = abs(p - l.first),
+		db = abs(p - l.second),
+		dc = abs(l.first - l.second);
+
+	return abs(2 * (da + db + dc) - max(da, max(db, dc))) < EPS;
+}
+
+double ccw(pt a, pt b, pt c)
+{
+	return det(a - b, c - a);
+}
+
+bool comp_pt(const pt a, const pt b)
+{
+	if (abs(real(a - b)) < EPS)
+		return imag(b - a) > EPS;
+	return real(b - a) > EPS;
+}
+
+/*
+ * Assume p[0] == p[-1] 
+ * Tested: UVA 11460
+ */
+vector<polygon> xLinePoly(line l, polygon p)
+{
+	vector<polygon> x;
+	vector<vector<int> > s(2, vector<int>());
+	vector<int> z;
+	map<int, int> z_map, pos;
+	pt u;
+	double c;
+
+	for (int i = 0; i < p.size(); i++)
+	{
+		if (i > 0 && xLineSeg_open(l, line(p[i - 1], p[i]), u))
+			p.insert(p.begin() + i, u);
+
+		c = ccw(l.first, l.second, p[i]);
+		if (c > -EPS)
+			s[0].push_back(i);
+		if (c < EPS)
+			s[1].push_back(i);
+
+		if (abs(c) < EPS)
+			if (z.size() == 0 || comp_pt(p[z.back()], p[i]))
+				z.push_back(i);
+			else
+			{
+				int lo = 0, hi = z.size(), mid;
+				while (hi - lo > 0)
+					if (comp_pt(p[i], p[z[mid = (hi + lo - 1) / 2]]))
+						hi = mid;
+					else 
+						lo = mid + 1;
+				z.insert(z.begin() + lo, i);
+			}
+	}
+
+	for (int i = 0; i < z.size(); i++)
+		z_map[z[i]] = i;
+
+	for (int k = 0; k < s.size(); k++)
+	{
+		if (s[k].front() != s[k].back())
+			s[k].push_back(s[k].front());
+
+		for (int i = 1; i < s[k].size(); i++)
+			if (z_map.count(s[k][i - 1]) > 0 && z_map.count(s[k][i]) > 0)
+				for (int j = z_map[s[k][i - 1]] + sign(z_map[s[k][i]] - z_map[s[k][i - 1]]); j != z_map[s[k][i]]; j += sign(z_map[s[k][i]] - z_map[s[k][i - 1]]))
+					s[k].insert(s[k].begin() + i++, z[j]);
+
+		pos.clear();
+		for (int i = 0; i < s[k].size(); i++)
+		{
+			if (pos.count(s[k][i]) != 0)
+			{
+				x.push_back(polygon());
+				for (int j = pos[s[k][i]]; j < i; j++)
+					x.back().push_back(p[s[k][j = pos[s[k][j]]]]);
+			}
+			pos[s[k][i]] = i;
+		}
+	}
+
+	for (int i = x.size() - 1; i >= 0; i--)
+		if (x[i].size() < 3)
+			x.erase(x.begin() + i);
+		else
+			x[i].push_back(x[i].front());
+
+	return x;
+}
 
 /* True if p is on segment a-b.
  *  - Assume a != b
@@ -105,9 +243,16 @@ pt xLineLine(pt a, pt b, pt c, pt d)
             / det(a-b, c-d) ;
 }
 
+void perp_bisector(pt a, pt b, pt &m, pt &d)
+{
+	m = (a + b) / pt(2.0, 0.0);
+	d = (b - a) * pt(0.0, 1.0);
+}
+
 /* Intersection of a line and a circle
  *  -- Returns the number of points of intersection, 0, 1 or 2
  *  -- Populates points a and b with the points of intersection
+ *  Tested: UVA 11037
  */
 int xLineCircle(line x, circle y, pt &a, pt &b)
 {
@@ -121,7 +266,7 @@ int xLineCircle(line x, circle y, pt &a, pt &b)
 		a = i;
 		return 1;
 	}
-	else if (abs(dpl) < y.second - EPS);
+	else if (abs(dpl) < y.second - EPS)
 	{
 		double h = sqrt(y.second * y.second - dpl * dpl);
 		a = i + h * (x.second - x.first) / abs(x.second - x.first);
@@ -137,6 +282,7 @@ int xLineCircle(line x, circle y, pt &a, pt &b)
 /* Intersection of two circles
  *  -- Returns the number of points of intersection, 0, 1 or 2 or INF
  *  -- Populates points m and n with the points of intersection
+ *  Tested: UVA 11037
  */
 int xCircleCircle(circle x, circle y, pt &m, pt &n)
 {
@@ -164,3 +310,10 @@ int xCircleCircle(circle x, circle y, pt &m, pt &n)
 		return 0;
 	}
 }
+
+/*$*/
+int main()
+{
+	return 0;
+}
+/*$*/
