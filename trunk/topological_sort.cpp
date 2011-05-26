@@ -34,6 +34,14 @@ bool visit(node *n)
 	return !n->in_cycle;
 }
 
+void topological_sort()
+{
+	for (vector<node *>::iterator it = nodes.begin(); it != nodes.end(); it++)
+		if ((*it)->in_edges.size() == 0)
+			if (!visit(*it))
+				break;
+}
+
 
 /*$*/
 #include <map>
@@ -61,10 +69,7 @@ int main()
 			nodemap[j]->out_edges.insert(nodemap[i]);
 		}
 
-		for (vector<node *>::iterator it = nodes.begin(); it != nodes.end(); it++)
-			if ((*it)->in_edges.size() == 0)
-				if (!visit(*it))
-					break;
+		topological_sort();
 
 		if (L.size() != nodes.size())
 			cout << "Error" << endl;

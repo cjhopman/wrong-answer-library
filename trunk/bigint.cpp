@@ -45,6 +45,8 @@ ostream& operator<<(ostream& o, const big& a) {
 	return o;
 }
 
+
+
 /*$*/
 int main() {
 	big p(1), c(1), t, top;
