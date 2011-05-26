@@ -242,15 +242,6 @@ bool isSquare(long n)
 /*
 map<long,long> newton_factor(long n)
 {
-    map<long,long> fact;
-    
-    for (int a = ceil(sqrt(n)) + 1; ; a++)
-    {
-        if (isSquare(a * a - N))
-        {
-        }
-    }
-    return fact;
 }
 */
 
