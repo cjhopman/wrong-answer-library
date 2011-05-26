@@ -5,19 +5,11 @@
 #include <iostream>
 #include <algorithm>
 #include <queue>
-#include <cassert>
 
 using namespace std;
 
-const int N = 205;
-int graph[N][N];
-int cost[N][N];
-int reduced_cost[N][N];
-int potential[N];
-int prev[N];
-
-int source = N - 1, sink = N - 2;
-const int INF = 10000000;
+const int N = 205, INF = 10000000;
+int graph[N][N], cost[N][N], reduced_cost[N][N], potential[N], prev[N], source = N - 1, sink = N - 2;
 
 void reduce_cost() {
 	for (int i = 0; i < N; i++)
@@ -40,8 +32,7 @@ int dijkstra() {
 
 	while (!pq.empty()) {
 		pii v = pq.top(); pq.pop();
-		int c = v.first;
-		int curr = v.second;
+		int c = v.first, curr = v.second;
 
 		if (potential[curr] < c) continue;
 
@@ -53,7 +44,6 @@ int dijkstra() {
 			pq.push(pii(potential[next],next));
 		}
 	}
-
 	return potential[sink];
 }
 
@@ -80,7 +70,6 @@ int min_cost_max_flow(int& c) {
 					potential[j] = min(potential[j], potential[i] + cost[i][j]);
 
 	while (dijkstra() < INF) flow += update(c);
-
 	return flow;
 }
 

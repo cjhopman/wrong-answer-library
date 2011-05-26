@@ -1,10 +1,3 @@
-/*
- * geom_poly.cpp
- *
- *  Created on: 20090212
- *      Author: dhe
- */
-
 #include <vector>
 #include <complex>
 
@@ -24,8 +17,7 @@ typedef line seg;
 /*
  * Assume V[0] == V[-1] 
  */
-double signed_area(polygon &V)
-{
+double signed_area(polygon &V) {
 	double A = 0.0;
 	for (unsigned i = 1; i < V.size(); i++)
 		A += det(V[i - 1], V[i]);
@@ -35,8 +27,7 @@ double signed_area(polygon &V)
 /*
  * Assume V[0] == V[-1] 
  */
-pt centroid(polygon &V)
-{
+pt centroid(polygon &V) {
 	pt c = pt(0.0, 0.0);
 	for (unsigned i = 1; i < V.size(); i++)
 		c += (V[i - 1] + V[i]) * pt(det(V[i - 1], V[i]), 0.0);
@@ -48,8 +39,7 @@ pt centroid(polygon &V)
 /* Returns 2 * (area of polygon V)
  *  - Assumes V[0] == V[-1]
  */
-double area_polygon(polygon &V)
-{
+double area_polygon(polygon &V) {
     double A = 0.0;
     for (unsigned i = 1; i < V.size(); i++)
         A += det(V[i - 1], V[i]);
@@ -59,8 +49,7 @@ double area_polygon(polygon &V)
 /*  - Assumes convex V in ccw order
  *  - Assumes V[0] == V[-1]
  */
-bool inside_convex(pt p, polygon& V)
-{
+bool inside_convex(pt p, polygon& V) {
     for (unsigned i = 1; i < V.size(); i++)
         if (det(V[i] - V[i - 1], p - V[i - 1]) < -EPS)
             return false;
@@ -74,8 +63,7 @@ bool inside_convex(pt p, polygon& V)
  *  - Assumes segment p-q does not intersect corners
  *  - Assumes q is large enough
  */
-bool inside_polygon(pt p, polygon& V)
-{
+bool inside_polygon(pt p, polygon& V) {
     pt q = polar(1e8, 1.2345);
     int s = 0;
     for (int i = 1; i < V.size(); i++)
@@ -85,8 +73,7 @@ bool inside_polygon(pt p, polygon& V)
 
 
 /*$*/
-int main()
-{
+int main() {
 	return 0;
 }
 /*$*/
