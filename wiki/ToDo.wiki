@@ -14,8 +14,6 @@ rabin karp (hashing)
 
 Aho-Carrosak (sp)
 
-Knuth-Morris-Pratt
-
 Venora Diagram
 
 Computations in cylindrical coordinates and spherical coordinates
