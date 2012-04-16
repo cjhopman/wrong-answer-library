@@ -311,6 +311,87 @@ int xCircleCircle(circle x, circle y, pt &m, pt &n)
 	}
 }
 
+// Internal Tangents are lines tangent to both circles which also
+// intersect the line connecting the centers of the two circles
+int internal_tangents(circle x, circle y, line &a, line &b) {
+  if (abs(x.first - y.first) < x.second + y.second - EPS) {
+    return 0;
+  } else if (abs(abs(x.first - y.first) - (x.second + y.second)) < EPS) {
+    perp_bisector(x.first, y.first, a.first, a.second);
+    a.first = x.first + x.second * (y.first - x.first) / abs(y.first - x.first);
+    a.second = a.first + a.second;
+    return 1;
+  } else {
+    pt xy = (y.first - x.first) / abs(y.first - x.first);
+    double gx = atan2(imag(xy), real(xy));
+    double gy = atan2(imag(-xy), real(-xy));
+    double th = acos((x.second + y.second) / abs(x.first - y.first));
+
+    a.first = y.first + polar(y.second, gy + th);
+    a.second = x.first + polar(x.second, gx + th);
+
+    b.first = y.first + polar(y.second, gy - th);
+    b.second = x.first + polar(x.second, gx - th);
+
+    return 2;
+  }
+}
+
+// External Tangents are lines tangent to both circles which do not
+// intersect the line connecting the centers of the two circles
+int external_tangents(circle x, circle y, line &a, line &b) {
+  if (abs(x.first - y.first) < EPS && abs(x.second - y.second) < EPS) {
+    return -1;
+  }
+  else if (abs(x.first - y.first) < abs(x.second - y.second) - EPS) {
+    return 0;
+  } else if (abs(abs(x.first - y.first) - abs(x.second - y.second)) < EPS) {
+    int m = x.second > y.second ? 1 : -1;
+    pt xy = m / abs(y.first - x.first) * (y.first - x.first);
+    perp_bisector(x.first, y.first, a.first, a.second);
+    a.first = (x.second > y.second ? x.first : y.first) + xy * max(x.second, y.second);
+    a.second = a.first + a.second;
+    return 1;
+  } else {
+    pt xy = (y.first - x.first) / abs(y.first - x.first);
+    double gx = atan2(imag(xy), real(xy));
+    double gy = atan2(imag(-xy), real(-xy));
+    double th = atan2(y.second - x.second, abs(x.first - y.first));
+
+    a.first = x.first + polar(x.second, gx + th + PI / 2.0);
+    a.second = y.first + polar(y.second, gy - (PI / 2.0) + th);
+
+    b.first = x.first + polar(x.second, gx - th - PI / 2.0);
+    b.second = y.first + polar(y.second, gy + (PI / 2.0) - th);
+
+    return 2;
+  }
+}
+
+// Determines the tangent line(s), if any, between a point and a circle
+int tangents(pt p, circle c, line &a, line &b) {
+  if (abs(c.first - p) < c.second - EPS) {
+    return 0;
+  } else if (abs(abs(c.first - p) - c.second) < EPS) {
+    perp_bisector(p, c.first, a.first, a.second);
+    a.first = p;
+    a.second = a.first + a.second;
+    return 1;
+  } else {
+    pt cp = (p - c.first) / abs(p - c.first);
+    double th = acos(c.second / abs(p - c.first));
+    double gc = atan2(imag(cp), real(cp));
+
+    a.first = p;
+    a.second = c.first + polar(c.second, gc + th);
+
+    b.first = p;
+    b.second = c.first + polar(c.second, gc - th);
+
+    return 2;
+  }
+}
+
 /*$*/
 int main()
 {
